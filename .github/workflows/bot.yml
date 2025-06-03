@@ -39,5 +39,5 @@ jobs:
         run: |
           chmod +x ./engines/stockfish
 
-      - name: Stockfish
+      - name: Running the bot
         run: python3 lichess-bot.py
