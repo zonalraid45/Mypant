@@ -88,10 +88,10 @@ engine:                            # Engine settings.
   homemade_options:
 #   Hash: 256
 
-  uci_options:                     # Arbitrary UCI options passed to the engine.
-    Move Overhead: 250             # Increase if your bot flags games too often.
-    Threads: 5                    # Max CPU threads the engine can use.
-    Hash: 5096                    # Max memory (in megabytes) the engine can allocate.
+  uci_options:                    # Arbitrary UCI options passed to the engine.
+    Move Overhead: 300            # Increase if your bot flags games too often.
+    Threads: 6                    # Max CPU threads the engine can use.
+    Hash: 6096                    # Max memory (in megabytes) the engine can allocate.
     SyzygyPath: "./engines/syzygy" # Paths to Syzygy endgame tablebases that the engine reads.
     UCI_ShowWDL: true              # Show the chance of the engine winning.
 #    go_commands:                  # Additional options to pass to the UCI go command.
@@ -127,7 +127,7 @@ correspondence:
   ponder: false                    # Ponder in correspondence games the bot is connected to.
   
 challenge:                         # Incoming challenges.
-  concurrency: 5                   # Number of games to play simultaneously.
+  concurrency: 1                   # Number of games to play simultaneously.
   sort_by: "best"                  # Possible values: "best" and "first".
   accept_bot: true                 # Accepts challenges coming from other bots.
   only_bot: false                  # Accept challenges by bots only.
@@ -150,14 +150,14 @@ challenge:                         # Incoming challenges.
 #   - racingKings
 #   - threeCheck
   time_controls:                   # Time controls to accept (bots are not allowed to play ultraBullet).
-#   - bullet
+    - bullet
 #   - blitz
 #   - rapid
 #   - classical
 #   - correspondence
 #    - unlimited
   modes:                           # Game modes to accept.
-#   - casual                       # Unrated games.
+    - casual                       # Unrated games.
 #   - rated                        # Rated games - must comment if the engine doesn't try to win.
   block_list:                      # List of users from which the challenges are always declined.
     - YoBot_v2
@@ -190,7 +190,7 @@ greeting:
                                    # "all" - every game is written to a single file named "{Bot name} games.pgn"
 
 matchmaking:
-  allow_matchmaking: true
+  allow_matchmaking: false
   allow_during_games: false         # Set it to 'true' to create challenges during long games.
   challenge_variant: "standard"    # If set to 'random', the bot will choose one variant from the variants enabled in 'challenge.variants'.
   challenge_timeout: 1             # Create a challenge after being idle for 'challenge_timeout' minutes. The minimum is 1 minute.
