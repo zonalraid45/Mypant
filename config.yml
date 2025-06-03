@@ -1,4 +1,4 @@
-token: TokenTimeIsBackBuddyss      # Lichess OAuth2 Token.
+token: TokenTimeIsNNBackBuddyss      # Lichess OAuth2 Token.
 url: "https://lichess.org/"        # Lichess base URL.
 
 engine:                            # Engine settings.
