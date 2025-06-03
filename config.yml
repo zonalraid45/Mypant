@@ -13,7 +13,7 @@ engine:                            # Engine settings.
     enabled: true                 # Activate polyglot book.
     book:
       standard:                 # List of book file paths for variant standard. 
-        - "./engines/optimus2502.bin"
+        - "./engines/optimus2509.bin"
         - "./engines/optimus32.bin"
         - "./engines/Titans.bin"
         - "./engines/Perfect2023.bin"
