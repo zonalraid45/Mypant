@@ -9,7 +9,7 @@ on:
     branches:
       - "main"
     paths:
-      - "lichess-bot.py"
+      - "user_interface.py"
   schedule:
     - cron: "1 */5 * * *"
 
@@ -39,5 +39,5 @@ jobs:
         run: |
           chmod +x ./engines/stockfish
 
-      - name: Running the bot
-        run: python3 lichess-bot.py
+      - name: Running bot
+        run: python user_interface.py --matchmaking
