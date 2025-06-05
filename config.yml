@@ -200,9 +200,9 @@ matchmaking:
 #  challenge_days:                 # Days for correspondence challenge (to be chosen at random).
 #    - 1
 #    - 2
-  opponent_min_rating: 3070        # Opponents rating should be above this value (600 is the minimum rating in lichess).
+  opponent_min_rating: 2600        # Opponents rating should be above this value (600 is the minimum rating in lichess).
   opponent_max_rating: 4000        # Opponents rating should be below this value (4000 is the maximum rating in lichess).
-  opponent_rating_difference: 0    # The maximum difference in rating between the bot's rating and opponent's rating.
+  opponent_rating_difference: 300  # The maximum difference in rating between the bot's rating and opponent's rating.
   rating_preference: "high"        # One of "none", "high", "low".
   opponent_allow_tos_violation: false # Set to 'true' to allow challenging bots that violated the Lichess Terms of Service.
   challenge_mode: "rated"          # Set it to the mode in which challenges are sent. Possible options are 'casual', 'rated' and 'random'.
