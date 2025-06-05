@@ -89,9 +89,9 @@ engine:                            # Engine settings.
 #   Hash: 256
 
   uci_options:                    # Arbitrary UCI options passed to the engine.
-    Move Overhead: 350            # Increase if your bot flags games too often.
-    Threads: 8                    # Max CPU threads the engine can use.
-    Hash: 1024                    # Max memory (in megabytes) the engine can allocate.
+    Move Overhead: 200            # Increase if your bot flags games too often.
+    Threads: 4                    # Max CPU threads the engine can use.
+    Hash: 4024                    # Max memory (in megabytes) the engine can allocate.
     SyzygyPath: "./engines/syzygy" # Paths to Syzygy endgame tablebases that the engine reads.
     UCI_ShowWDL: true              # Show the chance of the engine winning.
 #    go_commands:                  # Additional options to pass to the UCI go command.
@@ -127,7 +127,7 @@ correspondence:
   ponder: false                    # Ponder in correspondence games the bot is connected to.
   
 challenge:                         # Incoming challenges.
-  concurrency: 1                   # Number of games to play simultaneously.
+  concurrency: 6                   # Number of games to play simultaneously.
   sort_by: "best"                  # Possible values: "best" and "first".
   accept_bot: true                 # Accepts challenges coming from other bots.
   only_bot: false                  # Accept challenges by bots only.
@@ -163,7 +163,6 @@ challenge:                         # Incoming challenges.
     - YoBot_v2
     - TheMatrix2025
     - TheMatrix2029
-    - ToromBot
     - Nikitosik-ai
     - Nikitosikbot_v2
 # allow_list:                      # List of users from which challenges are exclusively accepted, all others being declined. If empty, challenges from all users may be accepted.
