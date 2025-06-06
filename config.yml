@@ -8,7 +8,7 @@ engines:
     silence_stderr: false                 # Suppresses stderr output.
     move_overhead_multiplier: 1.0         # Increase if your bot flags games too often. Default move overhead is 1 second per 1 minute initital time.
     uci_options:                          # Arbitrary UCI options passed to the engine. (Commenting allowed)
-      Threads: 2                          # Max CPU threads the engine can use.
+      Threads: 4                          # Max CPU threads the engine can use.
       Hash: 512                           # Max memory (in megabytes) the engine can allocate.
       Move Overhead: 250                  # Increase if your bot flags games too often.
 # variants:                               # Engine used for variants when no suitable special engine is configured.
@@ -171,8 +171,8 @@ matchmaking:
 #     variant: standard                   # Chess variant (https://lichess.org/variant) to challenge. Default: standard
 #     weight: 100                         # Weight with which this type is selected. Default: Types are played according to their time control.
 #     multiplier: 15                      # Multiplier for calculating timeouts in matchmaking. Default: smart multiplier calculation.
-#     min_rating_diff: 20                 # Minimum rating distance to opponent. Default: 0
-#     max_rating_diff: 1000               # Maximum rating distance to opponent. Default: 10000
+     min_rating_diff: 100                 # Minimum rating distance to opponent. Default: 0
+     max_rating_diff: 1000               # Maximum rating distance to opponent. Default: 10000
 
 messages:
   # Optional substitution keywords (include curly braces):
