@@ -192,7 +192,7 @@ messages:
   #   {ram} to insert RAM size
   # Any other words in curly braces will be removed.
   greeting: " Good luck!Type !help to glimpse my arsenal"                                                              # Message sent to the opponent at the 
-  goodbye: "Good game, see you next time."                                             # Message sent to the opponent after the end of a game.
+  goodbye: "Good game, see you next time.May our paths cross again"                                             # Message sent to the opponent after the end 
   greeting_spectators: "Type !help for a list of commands."                            # Message sent to the spectators at the beginning of a game.
   goodbye_spectators: "Thanks for watching."                                           # Message sent to the spectators after the end of a game.
 
