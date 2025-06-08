@@ -168,9 +168,9 @@ matchmaking:
       tc: 1+0      
     bulle2:
       tc: 2+1
-    bullet3:
+    bc:
       tc: 3+0
-    bulle3:
+    bm3:
       tc: 5+0 
     gulugulu:
       tc: 8+0 
