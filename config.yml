@@ -177,7 +177,11 @@ matchmaking:
     guliguli:
       tc: 0.5+0 
     hvj:
-      tc: 0.45+0 # Time control in initial_minutes+increment_seconds format.
+      tc: 0.75+0
+    win:
+      tc: 0.5+1
+    
+  # Time control in initial_minutes+increment_seconds format.
 #   casual_chess960:
 #     tc: 0.5+1
 #     rated: false
