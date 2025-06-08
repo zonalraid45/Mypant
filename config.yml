@@ -117,9 +117,9 @@ online_moves:
 offer_draw:
   enabled: true                          # Activate whether the bot should offer draw.
   score: 10                               # If the absolute value of the score is less than or equal to this value, the bot offers/accepts draw (in cp)
-  consecutive_moves: 21                   # How many moves in a row the absolute value of the score has to be below the draw value
+  consecutive_moves: 18                   # How many moves in a row the absolute value of the score has to be below the draw value
   min_game_length: 56                    # Earliest move in which draw is offered.
-  against_humans: true                    # Activate whether these settings should apply against humans.
+  against_humans: false                    # Activate whether these settings should apply against humans.
 
 resign:
   enabled: true                         # Activate whether the bot should resign games.
@@ -149,6 +149,7 @@ challenge:                                # Incoming challenges. (Commenting all
     - bullet
     - blitz
     - rapid
+    - classical
 #   - classical
 #   - 25+0
   bot_modes:                              # Game modes to accept against BOTs.
@@ -170,7 +171,13 @@ matchmaking:
     bullet3:
       tc: 3+0
     bullet3:
-      tc: 5+0                    # Time control in initial_minutes+increment_seconds format.
+      tc: 5+0 
+    gulugulu:
+      tc: 8+0 
+    guliguli:
+      tc: 0.5+0 
+    hvj:
+      tc: 0.45+0 # Time control in initial_minutes+increment_seconds format.
 #   casual_chess960:
 #     tc: 0.5+1
 #     rated: false
@@ -186,15 +193,15 @@ matchmaking:
 messages:
   # Optional substitution keywords (include curly braces):
   #   {opponent} to insert the opponent's name
-  #   {me} to insert our name
+  #   cto insert our name
   #   {engine} to insert engine name
   #   {cpu} to insert CPU information
   #   {ram} to insert RAM size
   # Any other words in curly braces will be removed.
-  greeting: " Good luck!Type !help to glimpse my arsenal"                                                              # Message sent to the opponent at the 
-  goodbye: "Good game, see you next time.May our paths cross again"                                             # Message sent to the opponent after the end 
-  greeting_spectators: "Type !help for a list of commands."                            # Message sent to the spectators at the beginning of a game.
-  goodbye_spectators: "Thanks for watching."                                           # Message sent to the spectators after the end of a game.
+  greeting: "Konnichiwa guzaimase!Using {engine}Type !help to glimpse my arsenal.Best of luck"                                                              # Message sent to the opponent at the 
+  goodbye: "GGs , ezz . .May our paths cross again"                                             # Message sent to the opponent after the end 
+  greeting_spectators: " ITZ {engine} in {me}.Type !help for a list of commands."                            # Message sent to the spectators at the beginning of a game.
+  goodbye_spectators: "Thanks for watching.The universe ripps off the heart"                                           # Message sent to the spectators after the end of a game.
 
 # whitelist:                              # List of users whose challenges are always accepted.
 #   - Username1
