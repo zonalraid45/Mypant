@@ -53,7 +53,7 @@ gaviota:
 
 opening_books:
   enabled: true                           # Activate opening books.
-  priority: 400                           # Priority with which this move source is used. Higher priority is used first.
+  priority: 999                           # Priority with which this move source is used. Higher priority is used first.
   books:
 #   bullet:
 #     selection: best_move                # Move selection is one of "weighted_random", "uniform_random" or "best_move".
@@ -202,10 +202,10 @@ messages:
   #   {cpu} to insert CPU information
   #   {ram} to insert RAM size
   # Any other words in curly braces will be removed.
-  greeting: "Konnichiwa guzaimase!Using {engine}Type !help to glimpse my arsenal.Best of luck"                                                              # Message sent to the opponent at the 
-  goodbye: "GGs , ezz . .May our paths cross again"                                             # Message sent to the opponent after the end 
+  greeting: "Konnichiwa guzaimase! Using help of {engine}Type !help to glimpse my arsenal.Best of luck"                                                              # Message sent to the opponent at the 
+  goodbye: "GGs , ezz.May we meet again , may i win again ?{me} signing off!"                                             # Message sent to the opponent after the end 
   greeting_spectators: " ITZ {engine} in {me}.Type !help for a list of commands."                            # Message sent to the spectators at the beginning of a game.
-  goodbye_spectators: "Thanks for watching.The universe ripps off the heart"                                           # Message sent to the spectators after the end of a game.
+  goodbye_spectators: "SIMULATION TERMINATED Thanks For watching ,{me} signing off!"                                           # Message sent to the spectators after the end of a game.
 
 # whitelist:                              # List of users whose challenges are always accepted.
 #   - Username1
