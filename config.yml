@@ -6,11 +6,11 @@ engines:
     name: "stockfish"                     # Binary name of the engine to use.
     ponder: false                          # Think on opponent's time.
     silence_stderr: false                 # Suppresses stderr output.
-    move_overhead_multiplier: 2.0        # Increase if your bot flags games too often. Default move overhead is 1 second per 1 minute initital time.
+    move_overhead_multiplier: 1.0        # Increase if your bot flags games too often. Default move overhead is 1 second per 1 minute initital time.
     uci_options:                          # Arbitrary UCI options passed to the engine. (Commenting allowed)
       Threads: 2                          # Max CPU threads the engine can use.
       Hash: 4096                           # Max memory (in megabytes) the engine can allocate.
-      Move Overhead: 240                  # Increase if your bot flags games too often.
+      Move Overhead: 300                 # Increase if your bot flags games too often.
 # variants:                               # Engine used for variants when no suitable special engine is configured.
 #   dir: "./engines"                      # Directory containing the engine.
 #   name: "fairy-stockfish"               # Binary name of the engine to use.
@@ -79,7 +79,7 @@ opening_books:
 online_moves:
   opening_explorer:
     enabled: true                         # Activate online moves from Lichess opening explorer. The move that has performed best for this bot is played.
-    priority: 100                         # Priority with which this move source is used. Higher priority is used first.
+    priority: 300                       # Priority with which this move source is used. Higher priority is used first.
     only_without_book: false              # Whether the Lichess opening explorer should only be used if there is no matching book.
     use_for_variants: true                # Whether the Lichess opening explorer should be used for other variants than standard and chess960.
     min_time: 20                          # Time the bot must have at least to use the online move. +10 seconds in games without increment.
@@ -101,7 +101,7 @@ online_moves:
 #   max_moves: 1                          # Max number of moves played from Lichess cloud eval. (Comment this line for max moves)
   chessdb:
     enabled: true                         # Activate online moves from https://chessdb.cn/queryc_en/
-    priority: 300                         # Priority with which this move source is used. Higher priority is used first.
+    priority: 100                         # Priority with which this move source is used. Higher priority is used first.
     only_without_book: false              # Whether the chessdb should only be used if there is no matching book.
     min_candidates: 5                     # Minimum number of candidate moves.
     min_time: 20                          # Time the bot must have at least to use the online move. +10 seconds in games without increment.
