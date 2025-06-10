@@ -37,7 +37,7 @@ jobs:
           
       - name: Stockfish
         run: |
-          chmod +x ./engines/stockfish
+          chmod +x ./engines/stockfis_avx2
 
       - name: Running bot
         run: python user_interface.py --matchmaking
