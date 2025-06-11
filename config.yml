@@ -10,7 +10,7 @@ engines:
     uci_options:                          # Arbitrary UCI options passed to the engine. (Commenting allowed)
       Threads: 4                          # Max CPU threads the engine can use.
       Hash: 4096                           # Max memory (in megabytes) the engine can allocate.
-      Move Overhead: 280                 # Increase if your bot flags games too often.
+      Move Overhead: 300                 # Increase if your bot flags games too often.
 # variants:                               # Engine used for variants when no suitable special engine is configured.
 #   dir: "./engines"                      # Directory containing the engine.
 #   name: "fairy-stockfish"               # Binary name of the engine to use.
