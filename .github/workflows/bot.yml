@@ -40,4 +40,4 @@ jobs:
           chmod +x ./engines/stockfish-ubuntu-x86-64-avx2
 
       - name: Running bot
-        run: python user_interface.py --matchmaking
+        run: python -u user_interface.py --matchmaking
