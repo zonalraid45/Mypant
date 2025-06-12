@@ -23,7 +23,7 @@ engines:
 #     Move Overhead: 100                  # Increase if your bot flags games too often.
 # Use the same pattern for 'bullet', 'blitz', 'rapid', 'classical',
 # 'antichess', 'atomic', 'chess960', 'crazyhouse', 'horde', 'kingofthehill', 'racingkings' and '3check' as well.
-# Append '_white' or '_black' to use the engine only as the specific color.
+# Append '_white' or '_black' to use the engine only as the specific color
 
 syzygy:
   standard:
