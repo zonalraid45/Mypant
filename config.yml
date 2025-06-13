@@ -70,7 +70,7 @@ opening_books:
       names:                              # List of names of books to use if there is no specific book for the time control, white, black or chess960.
        - optimus2409
        - optimus4
-       - Opimus3.2
+       - Opimus3.1
        - Perfect2023
        - Titans
 #   Use the same pattern for 'bullet', 'blitz', 'rapid', 'classical',
@@ -221,4 +221,4 @@ books:                                    # Names of the opening books (to be us
   optimus2409: "./engines/optimus2409.bin"
   optimus4:  "./engines/OPTIMUS4.bin"
   Perfect2023: "./engines/Perfect2023.bin"
-  Opimus3.2: "./engines/optimus32.bin"
+  Opimus3.1: "./engines/optimus32.bin"
