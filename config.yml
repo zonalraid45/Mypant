@@ -70,7 +70,7 @@ opening_books:
       names:                              # List of names of books to use if there is no specific book for the time control, white, black or chess960.
        - optimus2409
        - optimus4
-       - opimus3.2
+       - Opimus3.2
        - Perfect2023
        - Titans
 #   Use the same pattern for 'bullet', 'blitz', 'rapid', 'classical',
