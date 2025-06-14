@@ -9,8 +9,8 @@ engines:
     move_overhead_multiplier: 1.0        # Increase if your bot flags games too often. Default move overhead is 1 second per 1 minute initital time.
     uci_options:                          # Arbitrary UCI options passed to the engine. (Commenting allowed)
       Threads: 4                          # Max CPU threads the engine can use.
-      Hash: 512                           # Max memory (in megabytes) the engine can allocate.
-      Move Overhead: 300                 # Increase if your bot flags games too often.
+      Hash: 2512                           # Max memory (in megabytes) the engine can allocate.
+      Move Overhead: 220                 # Increase if your bot flags games too often.
 # variants:                               # Engine used for variants when no suitable special engine is configured.
 #   dir: "./engines"                      # Directory containing the engine.
 #   name: "fairy-stockfish"               # Binary name of the engine to use.
@@ -133,7 +133,7 @@ challenge:                                # Incoming challenges. (Commenting all
   bullet_with_increment_only: false       # Whether bullet games against BOTs should only be accepted with increment.
 # min_increment: 0                        # Minimum amount of increment to accept a challenge.
 # max_increment: 180                      # Maximum amount of increment to accept a challenge.
-# min_initial: 0                          # Minimum amount of initial time to accept a challenge.
+  min_initial: 60                       # Minimum amount of initial time to accept a challenge.
 # max_initial: 315360000                  # Maximum amount of initial time to accept a challenge.
   variants:                               # Chess variants to accept (https://lichess.org/variant).
     - standard
@@ -163,24 +163,24 @@ challenge:                                # Incoming challenges. (Commenting all
 matchmaking:
   delay: 10                               # Time in seconds the bot must be idle before a new challenge is started.
   timeout: 30                             # Time until a challenge is canceled.
-  selection: weighted_random                       # Matchmkaing type selection is one of "weighted_random", "sequential" or "cyclic".
+  selection: cyclic                       # Matchmkaing type selection is one of "weighted_random", "sequential" or "cyclic
   types:                                  # Matchmaking types of which one is selected before each game.
     bullet:                               # Arbitrary name of the matchmaking type. Names must be unique.
       tc: 1+0      
     bulle2:
-      tc: 2+1
+      tc: 1+1
     bc:
       tc: 3+0
     bm3:
       tc: 5+0 
     gulugulu:
-      tc: 8+0 
+      tc: 30+0 
     guliguli:
-      tc: 0.5+0 
+      tc: 8+0
     hvj:
-      tc: 0.75+0
+      tc: 2+0
     win:
-      tc: 0.5+1
+      tc: 10+0
     
   # Time control in initial_minutes+increment_seconds format.
 #   casual_chess960:
