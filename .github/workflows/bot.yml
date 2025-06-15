@@ -2,7 +2,6 @@
 
 name: Run bot
 
-# Controls when the workflow will run
 on:
   workflow_dispatch:
   push:
@@ -11,33 +10,34 @@ on:
     paths:
       - "user_interface.py"
   schedule:
-    - cron: "1 */5 * * *"
+    - cron: "1 */5 * * *"  # Every 5 hours at minute 1
 
-concurrency:
-  group: ${{ github.ref }}
-  cancel-in-progress: true
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   build:
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
+    timeout-minutes: 355  # Slightly under GitHub 6h limit
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
+      - name: Checkout repo
+        uses: actions/checkout@v3
 
       - name: Python Dependency Installation
         uses: py-actions/py-dependency-install@v4.0.0
-        
-      - name: Injection For my Repo
-        run: sed -i "s/TokenTimeIsBackBuddyss/${{ secrets.LICHESS_KEY }}/g" config.yml
-          
-      - name: Stockfish
-        run: |
-          chmod +x ./engines/stockfish-ubuntu-x86-64-avx2
 
-      - name: Running bot
+      - name: Inject Secret Token
+        run: sed -i "s/TokenTimeIsBackBuddyss/${{ secrets.LICHESS_KEY }}/g" config.yml
+
+      - name: Make Stockfish Executable
+        run: chmod +x ./engines/stockfish-ubuntu-x86-64-avx2
+
+      - name: Run Bot
         run: python -u user_interface.py --matchmaking
+
+      - name: 🔁 Self-Restart Workflow
+        if: always()  # Even if the bot crashes
+        run: |
+          curl -X POST \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/${{ github.repository }}/actions/workflows/bot.yml/dispatches \
+            -d '{"ref":"main"}'
