@@ -93,7 +93,7 @@ online_moves:
 #   max_moves: 1                          # Max number of moves played from Lichess opening explorer. (Comment this line for max moves)
   lichess_cloud:
     enabled: true                         # Activate online moves from Lichess cloud eval.
-    priority: 200                         # Priority with which this move source is used. Higher priority is used first.
+    priority: 200                        # Priority with which this move source is used. Higher priority is used first.
     only_without_book: false              # Whether the cloud should only be used if there is no matching book.
     min_eval_depth: 20                    # Minimum evaluation depth.
     min_time: 10                          # Time the bot must have at least to use the online move. +10 seconds in games without increment.
@@ -102,7 +102,7 @@ online_moves:
 #   max_moves: 1                          # Max number of moves played from Lichess cloud eval. (Comment this line for max moves)
   chessdb:
     enabled: true                         # Activate online moves from https://chessdb.cn/queryc_en/
-    priority: 100                         # Priority with which this move source is used. Higher priority is used first.
+    priority: 200                         # Priority with which this move source is used. Higher priority is used first.
     only_without_book: false              # Whether the chessdb should only be used if there is no matching book.
     min_candidates: 5                     # Minimum number of candidate moves.
     min_time: 20                          # Time the bot must have at least to use the online move. +10 seconds in games without increment.
