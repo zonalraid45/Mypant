@@ -211,7 +211,7 @@ messages:
   greeting: "Konnichiwa guzaimase! ❤️‍🔥Using help of {engine}Type !help to glimpse my arsenal.Best of luck"                                                              # Message sent to the opponent at the 
   goodbye: "GGs , ezz.May we meet again , may i win again * 💶{me} signing off!"                                             # Message sent to the opponent after the end 
   greeting_spectators: " ITZ {engine} in {me} competing for more depth with @{opponent} Type !help for a list of commands."                            # Message sent to the spectators at the beginning of a game.
-  goodbye_spectators: "SIMULATION TERMINATED### @{opponent}🤫Thanks For watching ,{me} signing off!"                                           # Message sent to the spectators after the end of a game.
+  goodbye_spectators: "SIMULATION TERMINATED### @{opponent} Thanks For watching ,{me} signing off!"                                           # Message sent to the spectators after the end of a game.
 
 # whitelist:                              # List of users whose challenges are always accepted.
 #   - Username1
