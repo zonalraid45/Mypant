@@ -9,8 +9,8 @@ engines:
     move_overhead_multiplier: 1.0        # Increase if your bot flags games too often. Default move overhead is 1 second per 1 minute initital time.
     uci_options:                          # Arbitrary UCI options passed to the engine. (Commenting allowed)
       Threads: 4                          # Max CPU threads the engine can use.
-      Hash: 2304                           # Max memory (in megabytes) the engine can allocate.
-      Move Overhead: 230                 # Increase if your bot flags games too often.
+      Hash: 3072                          # Max memory (in megabytes) the engine can allocate.
+      Move Overhead: 250                # Increase if your bot flags games too often.
 # variants:                               # Engine used for variants when no suitable special engine is configured.
 #   dir: "./engines"                      # Directory containing the engine.
 #   name: "fairy-stockfish"               # Binary name of the engine to use.
@@ -89,7 +89,7 @@ online_moves:
     only_with_wins: true                  # Whether to play only moves that have won before.
     selection: "performance"              # Move selection is "performance" or "win_rate".
     anti: true                            # Whether to play the moves in which the opponent performs the worst.
-    max_depth: 20                         # Half move max depth. (Comment this line for max depth)
+   # max_depth: 20                         # Half move max depth. (Comment this line for max depth)
 #   max_moves: 1                          # Max number of moves played from Lichess opening explorer. (Comment this line for max moves)
   lichess_cloud:
     enabled: true                         # Activate online moves from Lichess cloud eval.
@@ -98,7 +98,7 @@ online_moves:
     min_eval_depth: 20                    # Minimum evaluation depth.
     min_time: 10                          # Time the bot must have at least to use the online move. +10 seconds in games without increment.
     timeout: 3                            # Time the server has to respond.
-    max_depth: 30                         # Half move max depth. (Comment this line for max depth)
+    #max_depth: 30                         # Half move max depth. (Comment this line for max depth)
 #   max_moves: 1                          # Max number of moves played from Lichess cloud eval. (Comment this line for max moves)
   chessdb:
     enabled: true                         # Activate online moves from https://chessdb.cn/queryc_en/
@@ -107,8 +107,8 @@ online_moves:
     min_candidates: 5                     # Minimum number of candidate moves.
     min_time: 20                          # Time the bot must have at least to use the online move. +10 seconds in games without increment.
     timeout: 3                            # Time the server has to respond.
-    selection: "best"                     # Move selection is one of "optimal", "best" or "good".
-    max_depth: 30                         # Half move max depth. (Comment this line for max depth)
+    selection: "optimal"                     # Move selection is one of "optimal", "best" or "good".
+   # max_depth: 30                         # Half move max depth. (Comment this line for max depth)
 #   max_moves: 1                          # Max number of moves played from chessdb. (Comment this line for max moves)
   online_egtb:
     enabled: true                         # Activate online endgame tablebases from Lichess.
