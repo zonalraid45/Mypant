@@ -14,7 +14,7 @@ engines:
     limits:
       time: 5.0
       depth: 26
-      nodes: 4000000
+      nodes: 3000000
 # variants:                               # Engine used for variants when no suitable special engine is configured.
 #   dir: "./engines"                      # Directory containing the engine.
 #   name: "fairy-stockfish"               # Binary name of the engine to use.
