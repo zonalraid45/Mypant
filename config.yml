@@ -13,7 +13,7 @@ engines:
       Move Overhead: 200 
     limits:
       time: 5.0
-      depth: 26
+      depth: 32
       nodes: 3000000
 # variants:                               # Engine used for variants when no suitable special engine is configured.
 #   dir: "./engines"                      # Directory containing the engine.
