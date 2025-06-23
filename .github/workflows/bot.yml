@@ -47,8 +47,8 @@ jobs:
 
       - name: Make Stockfish Executable
         run: | 
-             chmod +x ./engines/stockfish-ubuntu-x86-64-bm12
-             chmod +x ./engines/fairy-stockfish_x86-64-bm12
+             chmod +x ./engines/stockfish-ubuntu-x86-64-bmi2
+             chmod +x ./engines/fairy-stockfish_x86-64-bmi2
 
       - name: Run Bot
         run: |
