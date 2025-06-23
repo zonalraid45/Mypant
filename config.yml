@@ -152,7 +152,7 @@ challenge:                                # Incoming challenges. (Commenting all
     - antichess
     - atomic
     - crazyhouse
-    - horde
+ #   - horde
     - kingOfTheHill
     - racingKings
     - threeCheck
