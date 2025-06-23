@@ -3,28 +3,30 @@ token: TokenTimeIsBackBuddyss             # Lichess OAuth2 Token.
 engines:
   standard:                               # Engine used for standard chess and when no suitable special engine is configured.
     dir: "./engines"                      # Directory containing the engine.
-    name: "stockfish-ubuntu-x86-64-avx2"                     # Binary name of the engine to use.
+    name: "stockfish-ubuntu-x86-64-bmi2"                     # Binary name of the engine to use.
     ponder: false                       # Think on opponent's time.
     silence_stderr: false                 # Suppresses stderr output.
     move_overhead_multiplier: 1.0   # Increase if your bot flags games too often. Default move overhead is 1 second per 1 minute initital time.
     uci_options:                          # Arbitrary UCI options passed to the engine. (Commenting allowed)
       Threads: 4                          # Max CPU threads the engine can use.
-      Hash: 3768                  # Max memory (in megabytes) the engine can allocate.
+      Hash: 3100                  # Max memory (in megabytes) the engine can allocate.
       Move Overhead: 225
     limits:
       time: 5.0
       depth: 32
       nodes: 4000000
-# variants:                               # Engine used for variants when no suitable special engine is configured.
-#   dir: "./engines"                      # Directory containing the engine.
-#   name: "fairy-stockfish"               # Binary name of the engine to use.
-#   ponder: true                          # Think on opponent's time.
-#   silence_stderr: false                 # Suppresses stderr output.
-#   move_overhead_multiplier: 1.0         # Increase if your bot flags games too often. Default move overhead is 1 second per 1 minute initital time.
-#   uci_options:                          # Arbitrary UCI options passed to the engine. (Commenting allowed)
-#     Threads: 4                          # Max CPU threads the engine can use.
-#     Hash: 256                           # Max memory (in megabytes) the engine can allocate.
-#     Move Overhead: 100                  # Increase if your bot flags games too often.
+ variants:                               # Engine used for variants when no suitable special engine is configured.
+   dir: "./engines"                      # Directory containing the engine.
+   name: "fairy-stockfish_x86-64-bmi2"               # Binary name of the engine to use.
+   ponder: false                          # Think on opponent's time.
+   silence_stderr: false                 # Suppresses stderr output.
+   move_overhead_multiplier: 1.1         # Increase if your bot flags games too often. Default move overhead is 1 second per 1 minute initital time.
+   uci_options:                          # Arbitrary UCI options passed to the engine. (Commenting allowed)
+     Threads: 4                          # Max CPU threads the engine can use.
+     Hash: 1048                           # Max memory (in megabytes) the engine can allocate.
+     Move Overhead: 200 
+     EvalFile: "horde-28173ddccabe.nnue;racingkings-636b95f085e3.nnue;crazyhouse-8ebf84784ad2.nnue;kingofthehill-978b86d0e6a4.nnue;antichess-dd3cbe53cd4e.nnue;atomic-2cf13ff256cc.nnue;3check-cb5f517c228b.nnue"
+# Increase if your bot flags games too often.
 # Use the same pattern for 'bullet', 'blitz', 'rapid', 'classical',
 # 'antichess', 'atomic', 'chess960', 'crazyhouse', 'horde', 'kingofthehill', 'racingkings' and '3check' as well.
 # Append '_white' or '_black' to use the engine only as the specific color
@@ -72,7 +74,7 @@ opening_books:
       selection: uniform_random      # Move selection is one of "weighted_random", "uniform_random" or "best_move".
       max_depth: 40                       # Half move max depth. (Comment this line for max depth)
       names:                              # List of names of books to use if there is no specific book for the time control, white, black or chess960.
-       - optimus2409
+       - optimus2502
        - optimus4
        - Opimus3.1
        - Perfect2023
@@ -143,13 +145,13 @@ challenge:                                # Incoming challenges. (Commenting all
     - standard
     - chess960
 #   - fromPosition
-#   - antichess
-#   - atomic
-#   - crazyhouse
-#   - horde
-#   - kingOfTheHill
-#   - racingKings
-#   - threeCheck
+    - antichess
+    - atomic
+    - crazyhouse
+    - horde
+    - kingOfTheHill
+    - racingKings
+    - threeCheck
   time_controls:                          # Speeds or time controls in initial_minutes+increment_seconds format to accept.
     - bullet
     - blitz
@@ -227,7 +229,7 @@ messages:
 
 books:                                    # Names of the opening books (to be used above in the opening_books section) and paths to the opening books.
   Titans: "engines/Titans.bin"
-  optimus2409: "./engines/optimus2409.bin"
+  optimus2502: "./engines/optimus2502.bin"
   optimus4:  "./engines/OPTIMUS4.bin"
   Perfect2023: "./engines/Perfect2023.bin"
   Opimus3.1: "./engines/optimus32.bin"
