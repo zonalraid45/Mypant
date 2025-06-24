@@ -184,7 +184,7 @@ matchmaking:
     bm3:
       tc: 1+0
     gulugulu:
-      tc: 1+1
+      tc: 0+1
     guliguli:
       tc: 10+0
     hvj:
@@ -194,7 +194,7 @@ matchmaking:
     loss:
       tc: 2+0
     drum: 
-      tc: 2+1
+      tc: 1+1
       variant: chess960
     
   # Time control in initial_minutes+increment_seconds format.
