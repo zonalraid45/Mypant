@@ -12,9 +12,9 @@ engines:
       Hash: 3250                 # Max memory (in megabytes) the engine can allocate.
       Move Overhead: 200
     limits:
-      time: 5.0
-      depth: 32
-      nodes: 4000000
+      time: 20.0
+      depth: 50
+      nodes: 8000000
   variants:                               # Engine used for variants when no suitable special engine is configured.
     dir: "./engines"                      # Directory containing the engine.
     name: "fairy-stockfish_x86-64-bmi2"               # Binary name of the engine to use.
