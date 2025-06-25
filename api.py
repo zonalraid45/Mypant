@@ -1,7 +1,6 @@
 import asyncio
 import json
 import logging
-from collections.abc import AsyncIterator
 from typing import Any
 
 import aiohttp
@@ -61,14 +60,12 @@ class API:
 
     @retry(**BASIC_RETRY_CONDITIONS)
     async def accept_challenge(self, challenge_id: str) -> bool:
-        try:
-            async with self.lichess_session.post(f'/api/challenge/{challenge_id}/accept') as response:
-                response.raise_for_status()
-                return True
-        except aiohttp.ClientResponseError as e:
-            if not 400 <= e.status <= 499:
-                print(e)
-            return False
+        async with self.lichess_session.post(f'/api/challenge/{challenge_id}/accept') as response:
+            json_response = await response.json()
+            if 'error' in json_response:
+                print(f'Challenge "{challenge_id}" could not be accepted: {json_response["error"]}')
+                return False
+            return True
 
     @retry(**BASIC_RETRY_CONDITIONS)
     async def cancel_challenge(self, challenge_id: str) -> bool:
@@ -91,8 +88,8 @@ class API:
             return False
 
     async def create_challenge(self,
-                               challenge_request: Challenge_Request
-                               ) -> AsyncIterator[API_Challenge_Reponse]:
+                               challenge_request: Challenge_Request,
+                               queue: asyncio.Queue[API_Challenge_Reponse]) -> None:
         try:
             async with self.lichess_session.post(f'/api/challenge/{challenge_request.opponent_username}',
                                                  data={'rated': 'true' if challenge_request.rated else 'false',
@@ -105,7 +102,7 @@ class API:
                                                  ) as response:
 
                 if response.status == 429:
-                    yield API_Challenge_Reponse(has_reached_rate_limit=True)
+                    await queue.put(API_Challenge_Reponse(has_reached_rate_limit=True))
                     return
 
                 async for line in response.content:
@@ -113,17 +110,17 @@ class API:
                         continue
 
                     data: dict[str, Any] = json.loads(line)
-                    yield API_Challenge_Reponse(data.get('id'),
-                                                data.get('done') == 'accepted',
-                                                data.get('error'),
-                                                data.get('done') == 'declined',
-                                                'clock.limit' in data,
-                                                'clock.increment' in data)
+                    await queue.put(API_Challenge_Reponse(data.get('id'),
+                                                          data.get('done') == 'accepted',
+                                                          data.get('error'),
+                                                          data.get('done') == 'declined',
+                                                          'clock.limit' in data,
+                                                          'clock.increment' in data))
 
         except (aiohttp.ClientError, json.JSONDecodeError) as e:
-            yield API_Challenge_Reponse(error=str(e))
+            await queue.put(API_Challenge_Reponse(error=str(e)))
         except TimeoutError:
-            yield API_Challenge_Reponse(has_timed_out=True)
+            await queue.put(API_Challenge_Reponse(has_timed_out=True))
 
     @retry(**BASIC_RETRY_CONDITIONS)
     async def decline_challenge(self, challenge_id: str, reason: Decline_Reason) -> bool:
