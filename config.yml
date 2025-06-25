@@ -25,7 +25,7 @@ engines:
       Threads: 4                          # Max CPU threads the engine can use.
       Hash: 768                          # Max memory (in megabytes) the engine can allocate.
       Move Overhead: 200 
-      EvalFile: "horde-28173ddccabe.nnue;racingkings-636b95f085e3.nnue;crazyhouse-8ebf84784ad2.nnue;kingofthehill-978b86d0e6a4.nnue;antichess-dd3cbe53cd4e.nnue;atomic-2cf13ff256cc.nnue;3check-cb5f517c228b.nnue"
+      EvalFile: "horde-28173ddccabe.nnue:racingkings-636b95f085e3.nnue:crazyhouse-8ebf84784ad2.nnue:kingofthehill-978b86d0e6a4.nnue:antichess-dd3cbe53cd4e.nnue:atomic-2cf13ff256cc.nnue:3check-cb5f517c228b.nnue"
     limits:
       time: 20.0
       depth: 50
