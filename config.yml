@@ -6,15 +6,15 @@ engines:
     name: "stockfish-ubuntu-x86-64-bmi2"                     # Binary name of the engine to use.
     ponder: false                       # Think on opponent's time.
     silence_stderr: false                 # Suppresses stderr output.
-    move_overhead_multiplier: 1.0  # Increase if your bot flags games too often. Default move overhead is 1 second per 1 minute initital time.
+    move_overhead_multiplier: 1.1 #Increase if your bot flags games too often. Default move overhead is 1 second per 1 minute initital time.
     uci_options:                          # Arbitrary UCI options passed to the engine. (Commenting allowed)
       Threads: 4                          # Max CPU threads the engine can use.
-      Hash: 3250                 # Max memory (in megabytes) the engine can allocate.
-      Move Overhead: 230
+      Hash: 3200                # Max memory (in megabytes) the engine can allocate.
+      Move Overhead: 200
     limits:
-      time: 20.0
-      depth: 50
-      nodes: 8000000
+     # time: 20.0
+    #  depth: 50
+   #   nodes: 8000000
   variants:                               # Engine used for variants when no suitable special engine is configured.
     dir: "./engines"                      # Directory containing the engine.
     name: "fairy-stockfish_x86-64-bmi2"               # Binary name of the engine to use.
