@@ -66,11 +66,16 @@ opening_books:
       selection: uniform_random
       max_depth: 40
       names:
-        - Titans
+     #   - Titans
         - optimus2502
         - optimus4
         - Opimus3.1
         - Perfect2023
+    standard_black:
+      selection: best_move 
+      #max depth : 69 
+      names:
+        - Titans
 
 online_moves:
   opening_explorer:
@@ -183,7 +188,7 @@ whitelist:
   - Supratsa
 
 books:
-  Titans: "./engines/book.bin"
+  Titans: "./engines/book1.bin"
   optimus2502: "./engines/OPTIMUS2502.bin"
   optimus4: "./engines/OPTIMUS4.bin"
   Perfect2023: "./engines/Perfect2023.bin"
