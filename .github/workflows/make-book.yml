@@ -23,7 +23,8 @@ jobs:
       - name: Ensure PGN exists
         run: |
           mkdir -p book
-          echo '[Event "Custom Opening"]
+          cat <<EOF > book/custom_book.pgn
+[Event "Custom Opening"]
 [Site "?"]
 [Date "2025.06.29"]
 [Round "-"]
@@ -31,7 +32,8 @@ jobs:
 [Black "?"]
 [Result "*"]
 
-1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 Nf6 5. O-O Be7 *' > book/custom_book.pgn
+1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 Nf6 5. O-O Be7 *
+EOF
 
       - name: Generate Polyglot .bin book
         run: |
