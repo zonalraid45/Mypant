@@ -20,20 +20,18 @@ jobs:
           sudo apt update
           sudo apt install -y polyglot
 
-      - name: Ensure PGN exists
+      - name: Create PGN file
         run: |
           mkdir -p book
-          cat <<EOF > book/custom_book.pgn
-[Event "Custom Opening"]
-[Site "?"]
-[Date "2025.06.29"]
-[Round "-"]
-[White "?"]
-[Black "?"]
-[Result "*"]
-
-1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 Nf6 5. O-O Be7 *
-EOF
+          echo "[Event \"Custom Opening\"]" > book/custom_book.pgn
+          echo "[Site \"?\"]" >> book/custom_book.pgn
+          echo "[Date \"2025.06.29\"]" >> book/custom_book.pgn
+          echo "[Round \"-\"]" >> book/custom_book.pgn
+          echo "[White \"?\"]" >> book/custom_book.pgn
+          echo "[Black \"?\"]" >> book/custom_book.pgn
+          echo "[Result \"*\"]" >> book/custom_book.pgn
+          echo "" >> book/custom_book.pgn
+          echo "1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 Nf6 5. O-O Be7 *" >> book/custom_book.pgn
 
       - name: Generate Polyglot .bin book
         run: |
@@ -44,3 +42,4 @@ EOF
         with:
           name: opening-book
           path: book/book.bin
+
