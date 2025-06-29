@@ -77,12 +77,13 @@ opening_books:
     standard:
       selection: uniform_random      # Move selection is one of "weighted_random", "uniform_random" or "best_move".
       max_depth: 40                       # Half move max depth. (Comment this line for max depth)
-      names:                              # List of names of books to use if there is no specific book for the time control, white, black or chess960.
+      names:  
+       - Titans # List of names of books to use if there is no specific book for the time control, white, black or chess960.
        - optimus2502
        - optimus4
        - Opimus3.1
        - Perfect2023
-       - Titans
+      # - Titans
 #   Use the same pattern for 'bullet', 'blitz', 'rapid', 'classical',
 #   'antichess', 'atomic', 'chess960', 'crazyhouse', 'horde', 'kingofthehill', 'racingkings' and '3check' as well.
 #   Append '_white' or '_black' to use the books only as the specific color.
@@ -232,7 +233,7 @@ messages:
 #   - Username2
 
 books:                                    # Names of the opening books (to be used above in the opening_books section) and paths to the opening books.
-  Titans: "engines/Titans.bin"
+  Titans: "engines/book.bin"
   optimus2502: "./engines/OPTIMUS2502.bin"
   optimus4:  "./engines/OPTIMUS4.bin"
   Perfect2023: "./engines/Perfect2023.bin"
