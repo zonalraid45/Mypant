@@ -1,0 +1,44 @@
+name: Build Polyglot Book
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'book/custom_book.pgn'
+      - '.github/workflows/make-book.yml'
+
+jobs:
+  build-book:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install polyglot
+        run: |
+          sudo apt update
+          sudo apt install -y polyglot
+
+      - name: Ensure PGN exists
+        run: |
+          mkdir -p book
+          echo '[Event "Custom Opening"]
+[Site "?"]
+[Date "2025.06.29"]
+[Round "-"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+
+1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 Nf6 5. O-O Be7 *' > book/custom_book.pgn
+
+      - name: Generate Polyglot .bin book
+        run: |
+          polyglot make-book -pgn book/custom_book.pgn -bin book/book.bin -min-game 1 -max-ply 40
+
+      - name: Upload .bin as GitHub artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: opening-book
+          path: book/book.bin
