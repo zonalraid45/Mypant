@@ -194,7 +194,7 @@ matchmaking:
     loss:
       tc: 2+0
     drum: 
-      tc: 1+1
+      tc: 0.5+1
       variant: chess960
     
   # Time control in initial_minutes+increment_seconds format.
