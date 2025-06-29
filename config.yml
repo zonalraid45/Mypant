@@ -224,8 +224,8 @@ messages:
   greeting_spectators: " ITZ {engine} in {me} competing for more depth with @{opponent} Type !help for a list of commands."                            # Message sent to the spectators at the beginning of a game.
   goodbye_spectators: "SIMULATION TERMINATED### @{opponent} Thanks For watching ,{me} signing off!"                                           # Message sent to the spectators after the end of a game.
 
-# whitelist:                              # List of users whose challenges are always accepted.
-#   - Username1
+ whitelist:                              # List of users whose challenges are always accepted.
+   - Supratsa
 #   - Username2
 
 # blacklist:                              # List of users who are not challenged and whose challenges are declined.
