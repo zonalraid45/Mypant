@@ -1,4 +1,4 @@
-name: Download Ruy Lopez Book
+name: Download and Query Ruy Lopez Book
 
 on:
   workflow_dispatch:
@@ -8,36 +8,66 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
       - name: Download from PixelDrain
         run: |
           mkdir -p engines
           curl -L "https://pixeldrain.com/api/file/gQziifHp" -o engines/ruylopez_book.bin
-
-      - name: Show file size
-        run: |
           ls -lh engines/ruylopez_book.bin
 
-      - name: Trim to 100MB if too large (optional)
-        run: |
-          MAX_BYTES=$((100 * 1024 * 1024))
-          ACTUAL_BYTES=$(stat -c %s engines/ruylopez_book.bin)
-          if [ "$ACTUAL_BYTES" -gt "$MAX_BYTES" ]; then
-            head -c $MAX_BYTES engines/ruylopez_book.bin > engines/book_trimmed.bin
-            mv engines/book_trimmed.bin engines/ruylopez_book.bin
-            echo "Trimmed book to 100MB"
-          else
-            echo "Book is under limit"
-          fi
+      - name: Upload book as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ruylopez-book
+          path: engines/ruylopez_book.bin
 
-      - name: Commit and push downloaded book
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  query-book:
+    needs: download-book
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
         run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
-          git add engines/ruylopez_book.bin
-          git commit -m "Add Ruy Lopez opening book" || echo "No changes to commit"
-          git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git HEAD:main
+          sudo apt-get update
+          sudo apt-get install -y stockfish
+          pip install chess polyglot
+
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ruylopez-book
+          path: engines
+
+      - name: Generate FEN for Ruy Lopez
+        run: |
+          FEN=$(echo -e "uci\nposition startpos moves e2e4 e7e5 g1f3 b8c6 f1b5\nd\nquit" | stockfish | grep "Fen:" | cut -d' ' -f2-)
+          echo "FEN=$FEN" >> $GITHUB_ENV
+          echo "Generated FEN: $FEN"
+
+      - name: Query book for moves
+        run: |
+          echo 'import chess' > script.py
+          echo 'import chess.polyglot' >> script.py
+          echo 'import os' >> script.py
+          echo 'fen = os.getenv("FEN")' >> script.py
+          echo 'board = chess.Board(fen)' >> script.py
+          echo 'book_path = "engines/ruylopez_book.bin"' >> script.py
+          echo 'print(f"Querying book at: {board.fen()}")' >> script.py
+          echo 'try:' >> script.py
+          echo '    with chess.polyglot.open_reader(book_path) as reader:' >> script.py
+          echo '        entries = list(reader.find_all(board))' >> script.py
+          echo '        if entries:' >> script.py
+          echo '            for entry in entries:' >> script.py
+          echo '                print(f"- {board.san(entry.move())} (weight: {entry.weight})")' >> script.py
+          echo '        else:' >> script.py
+          echo '            print("No book moves found")' >> script.py
+          echo 'except FileNotFoundError:' >> script.py
+          echo '    print("Book file not found!")' >> script.py
+          python3 script.py
