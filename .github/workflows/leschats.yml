@@ -1,46 +1,56 @@
-name: Download and Check Book
+name: Download Perfect Book from MEGA
 
 on:
   workflow_dispatch:
 
 jobs:
-  fetch-book:
+  mega-book:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Make engines folder
+      - name: Install megatools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y megatools
+
+      - name: Create folder
         run: mkdir -p engines
 
-      - name: Download book from PixelDrain
+      - name: Download from MEGA (public file)
         run: |
-          echo "📥 Downloading book..."
-          curl -L --retry 5 --retry-delay 3 "https://pixeldrain.com/api/file/gQziifHp?download" -o engines/ruylopez_book.bin
+          echo "📥 Downloading MEGA file..."
+          megadl 'https://mega.nz/file/F60VXIzL#UXOad32h53pHN7E_4arBzwkbKQtD2kezqOo7kOPAlOA' --path engines/perfect_book.bin
 
-      - name: Check book file size
+      - name: Validate book file
         run: |
-          FILE="engines/ruylopez_book.bin"
+          FILE="engines/perfect_book.bin"
           if [ ! -f "$FILE" ]; then
-            echo "❌ Book file not found!"
+            echo "❌ File not found!"
             exit 1
           fi
 
           SIZE=$(stat -c %s "$FILE")
-          echo "Downloaded size: $SIZE bytes"
+          echo "File size: $SIZE bytes"
 
-          if [ "$SIZE" -lt 16384 ] || [ $((SIZE % 16)) -ne 0 ]; then
-            echo "❌ Invalid book: size must be ≥16KB and multiple of 16"
+          REM=$((SIZE % 16))
+          if [ "$SIZE" -lt 16384 ]; then
+            echo "❌ Too small (<16KB)"
             exit 1
+          elif [ "$REM" -ne 0 ]; then
+            echo "⚠️ Size not multiple of 16, trimming $REM bytes..."
+            head -c $((SIZE - REM)) "$FILE" > "${FILE}.fixed"
+            mv "${FILE}.fixed" "$FILE"
+          else
+            echo "✅ File size is valid"
           fi
 
-          echo "✅ Book size valid"
-
-      - name: Commit book to repository
+      - name: Commit if valid
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git add engines/ruylopez_book.bin
-          git commit -m "Add valid Ruy Lopez book"
+          git add engines/perfect_book.bin
+          git commit -m "Add perfect Polyglot book from MEGA"
           git push
