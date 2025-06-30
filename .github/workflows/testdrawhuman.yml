@@ -1,35 +1,36 @@
-name: Read Polyglot Book
+name: Query book at Ruy Lopez position
 
 on:
   workflow_dispatch:
 
 jobs:
-  read-book:
+  query-book:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Install stockfish and Python tools
+      - name: Install Stockfish and Python dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y stockfish
           pip install chess polyglot
 
-      - name: Generate FEN after e4 e5 Nf3 Nc6 Bb5
+      - name: Generate FEN after 1.e4 e5 2.Nf3 Nc6 3.Bb5
+        id: generate_fen
         run: |
           FEN=$(echo -e "position startpos moves e2e4 e7e5 g1f3 b8c6 f1b5\nd" | stockfish | grep "Fen:" | cut -d':' -f2 | xargs)
           echo "FEN=$FEN" >> $GITHUB_ENV
-          echo "Using FEN: $FEN"
+          echo "Generated FEN: $FEN"
 
-      - name: Read book.bin at given FEN
+      - name: Read moves from engines/book.bin at that FEN
         run: |
-          echo '
+          cat <<EOF > read_book.py
 import chess
 import polyglot.opening
 
-fen = "'"$FEN"'"
+fen = "${FEN}"
 board = chess.Board(fen)
 print("Moves found in book at:", fen)
 
@@ -43,6 +44,6 @@ try:
             print("No book moves found.")
 except Exception as e:
     print("Error reading book:", e)
-' > read_book.py
+EOF
 
           python3 read_book.py
