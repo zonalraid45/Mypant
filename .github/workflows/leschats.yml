@@ -1,4 +1,4 @@
-name: Download Book from PixelDrain
+name: Download Ruy Lopez Book
 
 on:
   workflow_dispatch:
@@ -9,33 +9,35 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Download from PixelDrain
         run: |
           mkdir -p engines
-          curl -L "https://pixeldrain.com/api/file/gQziifHp" -o engines/book.bin
+          curl -L "https://pixeldrain.com/api/file/gQziifHp" -o engines/ruylopez_book.bin
 
       - name: Show file size
         run: |
-          ls -lh engines/book.bin
+          ls -lh engines/ruylopez_book.bin
 
       - name: Trim to 100MB if too large (optional)
         run: |
           MAX_BYTES=$((100 * 1024 * 1024))
-          ACTUAL_BYTES=$(stat -c %s engines/book.bin)
+          ACTUAL_BYTES=$(stat -c %s engines/ruylopez_book.bin)
           if [ "$ACTUAL_BYTES" -gt "$MAX_BYTES" ]; then
-            head -c $MAX_BYTES engines/book.bin > engines/book_trimmed.bin
-            mv engines/book_trimmed.bin engines/book.bin
+            head -c $MAX_BYTES engines/ruylopez_book.bin > engines/book_trimmed.bin
+            mv engines/book_trimmed.bin engines/ruylopez_book.bin
             echo "Trimmed book to 100MB"
           else
             echo "Book is under limit"
           fi
 
-      - name: Commit downloaded book
+      - name: Commit and push downloaded book
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git add engines/book.bin
-          git commit -m "Add book.bin from PixelDrain"
-          git push
+          git add engines/ruylopez_book.bin
+          git commit -m "Add Ruy Lopez opening book" || echo "No changes to commit"
+          git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git HEAD:main
