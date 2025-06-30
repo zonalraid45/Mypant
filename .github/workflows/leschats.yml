@@ -1,74 +1,46 @@
-name: Download and Query Ruy Lopez Book
+name: Download and Check Book
 
 on:
   workflow_dispatch:
 
 jobs:
-  download-book:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Download from PixelDrain
-        run: |
-          mkdir -p engines
-          curl -L "https://pixeldrain.com/api/file/gQziifHp?download" \
-            -o engines/ruylopez_book.bin
-          ls -lh engines/ruylopez_book.bin
-
-      - name: Upload book as artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: ruylopez-book
-          path: engines/ruylopez_book.bin
-
-  query-book:
-    needs: download-book
+  fetch-book:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
+      - name: Make engines folder
+        run: mkdir -p engines
 
-      - name: Install dependencies
+      - name: Download book from PixelDrain
         run: |
-          sudo apt-get update
-          sudo apt-get install -y stockfish
-          pip install chess polyglot
+          echo "📥 Downloading book..."
+          curl -L --retry 5 --retry-delay 3 "https://pixeldrain.com/api/file/gQziifHp?download" -o engines/ruylopez_book.bin
 
-      - name: Download book artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: ruylopez-book
-          path: engines
-
-      - name: Generate FEN for Ruy Lopez
+      - name: Check book file size
         run: |
-          FEN=$(echo -e "uci\nposition startpos moves e2e4 e7e5 g1f3 b8c6 f1b5\nd\nquit" | stockfish | grep "Fen:" | cut -d' ' -f2-)
-          echo "FEN=$FEN" >> $GITHUB_ENV
-          echo "Generated FEN: $FEN"
+          FILE="engines/ruylopez_book.bin"
+          if [ ! -f "$FILE" ]; then
+            echo "❌ Book file not found!"
+            exit 1
+          fi
 
-      - name: Query book for moves
+          SIZE=$(stat -c %s "$FILE")
+          echo "Downloaded size: $SIZE bytes"
+
+          if [ "$SIZE" -lt 16384 ] || [ $((SIZE % 16)) -ne 0 ]; then
+            echo "❌ Invalid book: size must be ≥16KB and multiple of 16"
+            exit 1
+          fi
+
+          echo "✅ Book size valid"
+
+      - name: Commit book to repository
         run: |
-          echo 'import chess' > script.py
-          echo 'import chess.polyglot' >> script.py
-          echo 'import os' >> script.py
-          echo 'fen = os.getenv("FEN")' >> script.py
-          echo 'board = chess.Board(fen)' >> script.py
-          echo 'book_path = "engines/ruylopez_book.bin"' >> script.py
-          echo 'print(f"Querying book at: {board.fen()}")' >> script.py
-          echo 'try:' >> script.py
-          echo '    with chess.polyglot.open_reader(book_path) as reader:' >> script.py
-          echo '        entries = list(reader.find_all(board))' >> script.py
-          echo '        if entries:' >> script.py
-          echo '            for entry in entries:' >> script.py
-          echo '                print(f"- {board.san(entry.move())} (weight: {entry.weight})")' >> script.py
-          echo '        else:' >> script.py
-          echo '            print("No book moves found")' >> script.py
-          echo 'except FileNotFoundError:' >> script.py
-          echo '    print("Book file not found!")' >> script.py
-          python3 script.py
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add engines/ruylopez_book.bin
+          git commit -m "Add valid Ruy Lopez book"
+          git push
