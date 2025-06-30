@@ -1,0 +1,37 @@
+name: Query book.bin from engines/
+
+on:
+  workflow_dispatch:
+
+jobs:
+  inspect-book:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Install polyglot and stockfish
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y polyglot stockfish
+
+      - name: Generate FEN for 1.e4 e5 2.Nf3 Nc6 3.Bb5
+        run: |
+          echo '[Event "Query"]' > game.pgn
+          echo '[Site "?"]' >> game.pgn
+          echo '[Date "2025.06.30"]' >> game.pgn
+          echo '[Round "-"]' >> game.pgn
+          echo '[White "?"]' >> game.pgn
+          echo '[Black "?"]' >> game.pgn
+          echo '[Result "*"]' >> game.pgn
+          echo '' >> game.pgn
+          echo '1. e4 e5 2. Nf3 Nc6 3. Bb5 *' >> game.pgn
+
+          FEN=$(echo -e "position startpos moves e2e4 e7e5 g1f3 b8c6 f1b5\nd" | stockfish | grep "Fen:" | head -n 1 | cut -d':' -f2 | xargs)
+          echo "FEN=$FEN" >> $GITHUB_ENV
+
+      - name: Dump book moves from engines/book.bin
+        run: |
+          echo "Querying book at FEN: $FEN"
+          polyglot dumpbin -f "$FEN" engines/book.bin || echo "No book moves found at this position."
