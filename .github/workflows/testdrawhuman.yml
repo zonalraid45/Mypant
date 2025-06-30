@@ -1,4 +1,4 @@
-name: Query book at Ruy Lopez position
+name: Query Ruy Lopez Book Moves
 
 on:
   workflow_dispatch:
@@ -9,45 +9,48 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Install Stockfish and Python packages
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y stockfish
           pip install chess polyglot
 
-      - name: Generate FEN for Ruy Lopez
-        id: generate_fen
+      - name: Generate FEN for position
+        id: generate_position
         run: |
-          FEN=$(echo -e "position startpos moves e2e4 e7e5 g1f3 b8c6 f1b5\nd" \
-                | stockfish \
-                | grep "Fen:" \
-                | cut -d':' -f2 \
-                | xargs)
+          echo "position startpos moves e2e4 e7e5 g1f3 b8c6 f1b5" > position.txt
+          FEN=$(stockfish < position.txt | grep "Fen:" | cut -d' ' -f2-)
           echo "FEN=$FEN" >> $GITHUB_ENV
           echo "Generated FEN: $FEN"
 
-      - name: Read book.bin at FEN
+      - name: Query opening book
         run: |
-          cat <<'EOF'>read_book.py
+          python3 <<EOF
 import chess
-import polyglot.opening
+import chess.polyglot
 import os
 
-fen = os.environ.get("FEN", "")
+fen = os.environ.get("FEN")
 board = chess.Board(fen)
-print("Moves found in book at:", fen)
+book_path = "engines/book.bin"
+
+print(f"Querying book at: {board.fen()}")
 
 try:
-    with polyglot.opening.Reader("engines/book.bin") as reader:
-        found = False
-        for entry in reader.find_all(board):
-            print(f"Move: {entry.move()}, Weight: {entry.weight}, Learn: {entry.learn}")
-            found = True
-        if not found:
-            print("No book moves found.")
-except Exception as e:
-    print("Error reading book:", e)
+    with chess.polyglot.open_reader(book_path) as reader:
+        entries = list(reader.find_all(board))
+        if entries:
+            for entry in entries:
+                print(f"- {board.san(entry.move())} (weight: {entry.weight})")
+        else:
+            print("No book moves found")
+except FileNotFoundError:
+    print(f"Error: Book file not found at {book_path}")
 EOF
-          python3 read_book.py
