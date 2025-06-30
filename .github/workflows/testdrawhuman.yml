@@ -32,25 +32,12 @@ jobs:
 
       - name: Query opening book
         run: |
-          python3 <<EOF
-import chess
-import chess.polyglot
-import os
-
-fen = os.environ.get("FEN")
-board = chess.Board(fen)
-book_path = "engines/book.bin"
-
-print(f"Querying book at: {board.fen()}")
-
-try:
-    with chess.polyglot.open_reader(book_path) as reader:
-        entries = list(reader.find_all(board))
-        if entries:
-            for entry in entries:
-                print(f"- {board.san(entry.move())} (weight: {entry.weight})")
-        else:
-            print("No book moves found")
-except FileNotFoundError:
-    print(f"Error: Book file not found at {book_path}")
-EOF
+          echo 'import chess' > script.py
+          echo 'import chess.polyglot' >> script.py
+          echo 'import os' >> script.py
+          echo 'fen = os.getenv("FEN")' >> script.py
+          echo 'board = chess.Board(fen)' >> script.py
+          echo 'book_path = "engines/book.bin"' >> script.py
+          echo 'print(f"Querying book at: {board.fen()}")' >> script.py
+          echo 'try:' >> script.py
+          echo '    with chess.polyglot.open_reader(book_path) as reader:'
