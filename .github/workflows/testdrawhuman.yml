@@ -22,21 +22,20 @@ jobs:
           sudo apt-get install -y stockfish
           pip install chess polyglot
 
-      - name: Generate FEN for position
-        id: fen
+      - name: Generate FEN for Ruy Lopez
         run: |
-          FEN=$(echo -e "uci\nposition startpos moves e2e4 e7e5 g1f3 b8c6 f1b5\nd\nquit" | stockfish | grep "Fen:" | cut -d ' ' -f2-)
+          FEN=$(echo -e "uci\nposition startpos moves e2e4 e7e5 g1f3 b8c6 f1b5\nd\nquit" | stockfish | grep "Fen:" | cut -d' ' -f2-)
           echo "FEN=$FEN" >> $GITHUB_ENV
           echo "Generated FEN: $FEN"
 
-      - name: Query opening book
+      - name: Query book for moves
         run: |
           echo 'import chess' > script.py
           echo 'import chess.polyglot' >> script.py
           echo 'import os' >> script.py
           echo 'fen = os.getenv("FEN")' >> script.py
           echo 'board = chess.Board(fen)' >> script.py
-          echo 'book_path = "engines/book.bin"' >> script.py
+          echo 'book_path = "engines/ruylopez_book.bin"' >> script.py
           echo 'print(f"Querying book at: {board.fen()}")' >> script.py
           echo 'try:' >> script.py
           echo '    with chess.polyglot.open_reader(book_path) as reader:' >> script.py
@@ -47,5 +46,5 @@ jobs:
           echo '        else:' >> script.py
           echo '            print("No book moves found")' >> script.py
           echo 'except FileNotFoundError:' >> script.py
-          echo '    print(f"Error: Book file not found at {book_path}")' >> script.py
+          echo '    print("Book file not found!")' >> script.py
           python3 script.py
