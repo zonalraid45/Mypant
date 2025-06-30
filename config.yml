@@ -66,9 +66,9 @@ opening_books:
       selection: uniform_random
       max_depth: 40
       names:
-     #   - Titans
-        - optimus2502
         - optimus4
+        - optimus2502
+       # - optimus4
         - Opimus3.1
         - Perfect2023
     standard_black:
@@ -190,7 +190,7 @@ whitelist:
 books:
   Titans: "./engines/book1.bin"
   optimus2502: "./engines/OPTIMUS2502.bin"
-  optimus4: "./engines/OPTIMUS4.bin"
+  optimus4: "./engines/perfect_book.bin"
   Perfect2023: "./engines/Perfect2023.bin"
   Opimus3.1: "./engines/optimus32.bin"
 
