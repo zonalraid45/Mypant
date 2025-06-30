@@ -123,7 +123,7 @@ offer_draw:
   against_humans: false
 
 resign:
-  enabled: true
+  enabled: false
   score: -1000
   consecutive_moves: 6
   against_humans: false
