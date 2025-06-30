@@ -1,0 +1,63 @@
+name: Download and Push Valid Book
+
+on:
+  workflow_dispatch:
+
+jobs:
+  download-validate-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          pip install chess polyglot
+
+      - name: Download Ruy Lopez book from PixelDrain
+        run: |
+          mkdir -p engines
+          curl -L "https://pixeldrain.com/api/file/gQziifHp?download" -o engines/temp_book.bin
+          ls -lh engines/temp_book.bin
+
+      - name: Validate and move book if valid
+        id: validate_book
+        run: |
+          python3 - <<EOF
+import os
+import chess.polyglot
+
+book_path = "engines/temp_book.bin"
+dest_path = "engines/properbook.bin"
+
+size = os.path.getsize(book_path)
+print(f"File size: {size} bytes")
+
+if size < 16 or size % 16 != 0:
+    raise Exception("Invalid file size: not a valid Polyglot book")
+
+try:
+    with chess.polyglot.open_reader(book_path) as reader:
+        first_entry = next(reader, None)
+        if first_entry is None:
+            raise Exception("Book file opened but contains no moves.")
+        print(f"Book valid. First move: {first_entry.move()}, weight: {first_entry.weight}")
+        os.rename(book_path, dest_path)
+        print("Moved valid book to properbook.bin")
+except Exception as e:
+    raise Exception(f"Book validation failed: {e}")
+EOF
+
+      - name: Push valid book to repository
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add engines/properbook.bin
+          git commit -m "Add validated properbook.bin"
+          git push
