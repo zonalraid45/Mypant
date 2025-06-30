@@ -23,10 +23,9 @@ jobs:
           pip install chess polyglot
 
       - name: Generate FEN for position
-        id: generate_position
+        id: fen
         run: |
-          echo "position startpos moves e2e4 e7e5 g1f3 b8c6 f1b5" > position.txt
-          FEN=$(stockfish < position.txt | grep "Fen:" | cut -d' ' -f2-)
+          FEN=$(echo -e "uci\nposition startpos moves e2e4 e7e5 g1f3 b8c6 f1b5\nd\nquit" | stockfish | grep "Fen:" | cut -d ' ' -f2-)
           echo "FEN=$FEN" >> $GITHUB_ENV
           echo "Generated FEN: $FEN"
 
@@ -40,4 +39,13 @@ jobs:
           echo 'book_path = "engines/book.bin"' >> script.py
           echo 'print(f"Querying book at: {board.fen()}")' >> script.py
           echo 'try:' >> script.py
-          echo '    with chess.polyglot.open_reader(book_path) as reader:'
+          echo '    with chess.polyglot.open_reader(book_path) as reader:' >> script.py
+          echo '        entries = list(reader.find_all(board))' >> script.py
+          echo '        if entries:' >> script.py
+          echo '            for entry in entries:' >> script.py
+          echo '                print(f"- {board.san(entry.move())} (weight: {entry.weight})")' >> script.py
+          echo '        else:' >> script.py
+          echo '            print("No book moves found")' >> script.py
+          echo 'except FileNotFoundError:' >> script.py
+          echo '    print(f"Error: Book file not found at {book_path}")' >> script.py
+          python3 script.py
