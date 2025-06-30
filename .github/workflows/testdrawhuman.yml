@@ -1,4 +1,4 @@
-name: Query Ruy Lopez from Book
+name: Query Perfect Book
 
 on:
   workflow_dispatch:
@@ -20,7 +20,12 @@ jobs:
         run: |
           pip install chess polyglot
 
-      - name: Query book moves
+      - name: List book file
+        run: |
+          ls -lh engines/perfect_book.bin
+          stat engines/perfect_book.bin
+
+      - name: Query book for Ruy Lopez
         run: |
           echo "import chess" > query.py
           echo "import chess.polyglot" >> query.py
