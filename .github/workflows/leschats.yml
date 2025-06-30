@@ -11,7 +11,8 @@ jobs:
       - name: Download from PixelDrain
         run: |
           mkdir -p engines
-          curl -L "https://pixeldrain.com/api/file/gQziifHp" -o engines/ruylopez_book.bin
+          curl -L "https://pixeldrain.com/api/file/gQziifHp?download" \
+            -o engines/ruylopez_book.bin
           ls -lh engines/ruylopez_book.bin
 
       - name: Upload book as artifact
@@ -39,7 +40,7 @@ jobs:
           sudo apt-get install -y stockfish
           pip install chess polyglot
 
-      - name: Download artifact
+      - name: Download book artifact
         uses: actions/download-artifact@v4
         with:
           name: ruylopez-book
