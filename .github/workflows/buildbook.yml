@@ -9,6 +9,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: write
+
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
@@ -22,13 +25,13 @@ jobs:
         run: pip install chess requests
 
       - name: Fetch games
-        run: python scripts/fetch_games.py
+        run: python fetch_games.py  # ✅ updated path
 
       - name: Filter games
-        run: python scripts/filter_games.py
+        run: python filter_games.py  # ✅ updated path
 
       - name: Trim games
-        run: python scripts/trim_games.py
+        run: python trim_games.py  # ✅ updated path
 
       - name: Install Polyglot
         run: |
@@ -38,14 +41,14 @@ jobs:
       - name: Generate book.bin
         run: |
           mkdir -p engines
-          polyglot make-book -pgn polyglot_book.pgn -bin engines/book.bin -min-game 1 -max-ply 80
+          polyglot make-book -pgn polyglot_book.pgn -bin engines/book7.bin -min-game 1 -max-ply 80
 
       - name: Commit and push book.bin
         env:
-          GH_PAT: ${{ secrets.GH_PAT }}
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config --global user.email "github-actions@github.com"
           git config --global user.name "GitHub Actions"
-          git add engines/book.bin
+          git add engines/book7.bin
           git commit -m "Update book.bin [automated]" || echo "No changes to commit"
-          git push https://x-access-token:${GH_PAT}@github.com/${{ github.repository }}.git HEAD:${{ github.ref_name }}
+          git push
