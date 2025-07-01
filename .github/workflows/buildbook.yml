@@ -41,7 +41,7 @@ jobs:
       - name: Generate book9.bin
         run: |
           mkdir -p engines
-          polyglot make-book -pgn polyglot_book.pgn -bin engines/book100.bin -min-game 2 -max-ply 80
+          polyglot make-book -pgn polyglot_book.pgn -bin engines/book100.bin -min-game 1 -max-ply 80
 
       - name: Check book9.bin size
         run: |
