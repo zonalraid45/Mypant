@@ -1,5 +1,6 @@
 import chess.pgn
 import io
+import random
 
 input_file = "filtered_games.pgn"
 output_file = "polyglot_book.pgn"
@@ -8,7 +9,9 @@ MAX_MOVES = 40
 with open(input_file, "r", encoding="utf-8") as f:
     all_text = f.read()
 
-games = all_text.strip().split("\n\n\n")
+games = all_text.strip().split("\n\n[Event")
+games = ["[Event" + g if not g.startswith("[Event") else g for g in games if g.strip()]
+random.shuffle(games)
 trimmed = []
 
 for pgn_text in games:
