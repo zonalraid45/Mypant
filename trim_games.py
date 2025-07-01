@@ -1,4 +1,3 @@
-# scripts/trim_games.py
 import chess.pgn
 import io
 
@@ -14,6 +13,9 @@ trimmed = []
 
 for pgn_text in games:
     game = chess.pgn.read_game(io.StringIO(pgn_text))
+    if not game:
+        continue
+
     board = game.board()
     new_game = chess.pgn.Game()
     node = new_game
@@ -23,6 +25,9 @@ for pgn_text in games:
             break
         board.push(move)
         node = node.add_variation(move)
+
+    # Preserve metadata (optional)
+    new_game.headers.update(game.headers)
 
     trimmed.append(str(new_game))
 
