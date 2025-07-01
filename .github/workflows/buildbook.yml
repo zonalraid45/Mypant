@@ -38,27 +38,27 @@ jobs:
           sudo apt update
           sudo apt install polyglot
 
-      - name: Generate book8.bin
+      - name: Generate book9.bin
         run: |
           mkdir -p engines
-          polyglot make-book -pgn polyglot_book.pgn -bin engines/book8.bin -min-game 1 -max-ply 80
+          polyglot make-book -pgn polyglot_book.pgn -bin engines/book9.bin -min-game 1 -max-ply 80
 
-      - name: Check book8.bin size
+      - name: Check book9.bin size
         run: |
-          stat engines/book8.bin
-          SIZE=$(stat --format="%s" engines/book8.bin)
+          stat engines/book9.bin
+          SIZE=$(stat --format="%s" engines/book9.bin)
           if [ $((SIZE % 16)) -ne 0 ]; then
-            echo "ERROR: book8.bin size not multiple of 16"
+            echo "ERROR: book9.bin size not multiple of 16"
             exit 1
           fi
-          echo "✅ book8.bin is valid"
+          echo "✅ book9.bin is valid"
 
-      - name: Commit and push book8.bin
+      - name: Commit and push book9.bin
         env:
           TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config --global user.email "github-actions@github.com"
           git config --global user.name "GitHub Actions"
-          git add engines/book8.bin
-          git commit -m "Update book8.bin [automated]" || echo "No changes to commit"
+          git add engines/book9.bin
+          git commit -m "Update book9.bin [automated]" || echo "No changes to commit"
           git push
