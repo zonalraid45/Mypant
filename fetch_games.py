@@ -3,7 +3,7 @@ import json
 import time
 
 USERNAME = "Nikitosikbot_v2"
-MAX_GAMES = 1000
+MAX_GAMES = 1500
 OUTPUT_FILE = "raw_games.pgn"
 
 headers = {
