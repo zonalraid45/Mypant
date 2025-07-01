@@ -26,9 +26,7 @@ for pgn_text in games:
         board.push(move)
         node = node.add_variation(move)
 
-    # Preserve metadata (optional)
     new_game.headers.update(game.headers)
-
     trimmed.append(str(new_game))
 
 with open(output_file, "w", encoding="utf-8") as f:
