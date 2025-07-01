@@ -41,17 +41,17 @@ jobs:
       - name: Generate book9.bin
         run: |
           mkdir -p engines
-          polyglot make-book -pgn polyglot_book.pgn -bin engines/book100.bin -min-game 1 -max-ply 80
+          polyglot make-book -pgn polyglot_book.pgn -bin engines/book1001.bin -min-game 1 -max-ply 80
 
-      - name: Check book9.bin size
+      - name: Check book69.bin size
         run: |
-          stat engines/book11.bin
-          SIZE=$(stat --format="%s" engines/book100.bin)
+          stat engines/book1001.bin
+          SIZE=$(stat --format="%s" engines/book1001.bin)
           if [ $((SIZE % 16)) -ne 0 ]; then
-            echo "ERROR: book100.bin size not multiple of 16"
+            echo "ERROR: book1001.bin size not multiple of 16"
             exit 1
           fi
-          echo "✅ book100.bin is valid"
+          echo "✅ book1001.bin is valid"
 
       - name: Commit and push book9.bin
         env:
@@ -59,6 +59,6 @@ jobs:
         run: |
           git config --global user.email "github-actions@github.com"
           git config --global user.name "GitHub Actions"
-          git add engines/book100.bin
-          git commit -m "Update book100.bin [automated]" || echo "No changes to commit"
+          git add engines/book1001.bin
+          git commit -m "Update book1001.bin [automated]" || echo "No changes to commit"
           git push
