@@ -4,7 +4,7 @@ import random
 
 input_file = "filtered_games.pgn"
 output_file = "polyglot_book.pgn"
-MAX_MOVES = 40
+MAX_MOVES = 80
 
 with open(input_file, "r", encoding="utf-8") as f:
     all_text = f.read()
