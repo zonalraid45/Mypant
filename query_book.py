@@ -1,7 +1,7 @@
 import chess
 import chess.polyglot
 
-# === Config: Change this ===
+# === Config ===
 BOOK_PATH = "engines/Titans.bin"
 SAN_MOVES = "e4 e5 Nf3 Nc6 Bb5"
 
@@ -17,7 +17,7 @@ for san in SAN_MOVES.split():
 print("FEN:", board.fen())
 print()
 
-# === Open Polyglot book and query ===
+# === Query Polyglot book ===
 try:
     with chess.polyglot.open_reader(BOOK_PATH) as reader:
         entries = list(reader.find_all(board))
@@ -26,7 +26,7 @@ try:
         else:
             print("Recommended moves from book:")
             for entry in entries:
-                move = board.san(entry.move())
+                move = board.san(entry.move)
                 print(f"- {move} (weight {entry.weight}, learn {entry.learn})")
 except FileNotFoundError:
     print(f"Book file not found: {BOOK_PATH}")
