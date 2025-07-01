@@ -7,7 +7,8 @@ output_file = "filtered_games.pgn"
 with open(input_file, "r", encoding="utf-8") as f:
     all_text = f.read()
 
-games = all_text.strip().split("\n\n\n")
+games = all_text.strip().split("\n\n[Event")
+games = ["[Event" + g if not g.startswith("[Event") else g for g in games if g.strip()]
 filtered = []
 
 for pgn_text in games:
@@ -22,9 +23,9 @@ for pgn_text in games:
     white_elo = int(headers.get("WhiteElo", "0"))
     black_elo = int(headers.get("BlackElo", "0"))
 
-    if result == "1-0" and "bot" in black.lower() and black_elo > 2950:
+    if result == "1-0" and "bot" in black.lower() and black_elo >= 2950:
         filtered.append(pgn_text)
-    elif result == "0-1" and "bot" in white.lower() and white_elo > 2950:
+    elif result == "0-1" and "bot" in white.lower() and white_elo >= 2950:
         filtered.append(pgn_text)
 
 print(f"Filtered {len(filtered)} games out of {len(games)}")
