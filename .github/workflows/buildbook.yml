@@ -1,0 +1,51 @@
+name: Build Polyglot Book
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * 1'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+
+      - name: Install dependencies
+        run: pip install chess requests
+
+      - name: Fetch games
+        run: python scripts/fetch_games.py
+
+      - name: Filter games
+        run: python scripts/filter_games.py
+
+      - name: Trim games
+        run: python scripts/trim_games.py
+
+      - name: Install Polyglot
+        run: |
+          sudo apt update
+          sudo apt install polyglot
+
+      - name: Generate book.bin
+        run: |
+          mkdir -p engines
+          polyglot make-book -pgn polyglot_book.pgn -bin engines/book.bin -min-game 1 -max-ply 80
+
+      - name: Commit and push book.bin
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
+        run: |
+          git config --global user.email "github-actions@github.com"
+          git config --global user.name "GitHub Actions"
+          git add engines/book.bin
+          git commit -m "Update book.bin [automated]" || echo "No changes to commit"
+          git push https://x-access-token:${GH_PAT}@github.com/${{ github.repository }}.git HEAD:${{ github.ref_name }}
