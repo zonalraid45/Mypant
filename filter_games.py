@@ -23,10 +23,18 @@ for pgn_text in games:
     white_elo = int(headers.get("WhiteElo", "0"))
     black_elo = int(headers.get("BlackElo", "0"))
 
+    # Win against bot with >= 2900
     if result == "1-0" and "bot" in black.lower() and black_elo >= 2900:
         filtered.append(pgn_text)
     elif result == "0-1" and "bot" in white.lower() and white_elo >= 2900:
         filtered.append(pgn_text)
+
+    # Draw with bot with >= 3180
+    elif result == "1/2-1/2":
+        if "bot" in black.lower() and black_elo >= 3180:
+            filtered.append(pgn_text)
+        elif "bot" in white.lower() and white_elo >= 3180:
+            filtered.append(pgn_text)
 
 print(f"Filtered {len(filtered)} games out of {len(games)}")
 
