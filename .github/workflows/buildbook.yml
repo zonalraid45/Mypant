@@ -38,12 +38,12 @@ jobs:
           sudo apt update
           sudo apt install polyglot
 
-      - name: Generate book.bin
+      - name: Generate book8.bin
         run: |
           mkdir -p engines
           polyglot make-book -pgn polyglot_book.pgn -bin engines/book8.bin -min-game 1 -max-ply 80
 
-      - name: Check book size
+      - name: Check book8.bin size
         run: |
           stat engines/book8.bin
           SIZE=$(stat --format="%s" engines/book8.bin)
@@ -51,9 +51,9 @@ jobs:
             echo "ERROR: book8.bin size not multiple of 16"
             exit 1
           fi
-          echo "✅ book7.bin is valid"
+          echo "✅ book8.bin is valid"
 
-      - name: Commit and push book7.bin
+      - name: Commit and push book8.bin
         env:
           TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
