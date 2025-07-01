@@ -75,9 +75,9 @@ opening_books:
       selection: best_move 
       #max depth : 69 
       names:
-        - Titans
         - optimus4
         - optimus2502
+        - Titans
 
 online_moves:
   opening_explorer:
@@ -148,10 +148,11 @@ challenge:
     - rapid
     - classical
   bot_modes:
-    - casual
+   # - casual
     - rated
   human_modes:
-    - casual
+   # - casual
+   #- rated
 
 matchmaking:
   delay: 10
@@ -188,6 +189,7 @@ messages:
 
 whitelist:
   - Supratsa
+  - Shresthmah
 
 books:
   Titans: "./engines/book1.bin"
