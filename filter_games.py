@@ -1,4 +1,3 @@
-# scripts/filter_games.py
 import chess.pgn
 import io
 
@@ -16,12 +15,14 @@ for pgn_text in games:
     if not game:
         continue
 
-    white = game.headers.get("White", "")
-    black = game.headers.get("Black", "")
-    result = game.headers.get("Result", "")
-    white_elo = int(game.headers.get("WhiteElo", "0"))
-    black_elo = int(game.headers.get("BlackElo", "0"))
+    headers = game.headers
+    white = headers.get("White", "")
+    black = headers.get("Black", "")
+    result = headers.get("Result", "")
+    white_elo = int(headers.get("WhiteElo", "0"))
+    black_elo = int(headers.get("BlackElo", "0"))
 
+    # Win against a 2950+ rated bot
     if result == "1-0" and black.endswith("bot") and black_elo >= 2950:
         filtered.append(pgn_text)
     elif result == "0-1" and white.endswith("bot") and white_elo >= 2950:
