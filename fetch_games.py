@@ -1,5 +1,5 @@
-# scripts/fetch_games.py
 import requests
+import json
 import time
 
 USERNAME = "Nikitosikbot_v2"
@@ -19,6 +19,10 @@ with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
     with requests.get(url, headers=headers, params=params, stream=True) as r:
         for line in r.iter_lines():
             if line:
-                game_json = eval(line)
-                f.write(game_json["pgn"] + "\n\n")
+                try:
+                    game_json = json.loads(line.decode("utf-8"))
+                    if "pgn" in game_json:
+                        f.write(game_json["pgn"] + "\n\n")
+                except json.JSONDecodeError as e:
+                    print("Failed to parse line:", line)
             time.sleep(0.1)
