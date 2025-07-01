@@ -14,7 +14,7 @@ params = {
     "max": MAX_GAMES,
     "pgnInJson": True,
     "rated": True,
-    "perfType": "bullet,blitz,rapid,classical"
+    "perfType": "blitz,rapid,classical"
 }
 
 url = f"https://lichess.org/api/games/user/{USERNAME}"
