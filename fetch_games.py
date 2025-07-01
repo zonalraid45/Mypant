@@ -6,11 +6,15 @@ USERNAME = "Nikitosikbot_v2"
 MAX_GAMES = 1000
 OUTPUT_FILE = "raw_games.pgn"
 
-headers = {"Accept": "application/x-ndjson"}
+headers = {
+    "Accept": "application/x-ndjson"
+}
+
 params = {
     "max": MAX_GAMES,
-    "perfType": "ultraBullet,bullet,blitz,rapid,classical",
-    "rated": True
+    "pgnInJson": True,
+    "rated": True,
+    "perfType": "bullet,blitz,rapid,classical"
 }
 
 url = f"https://lichess.org/api/games/user/{USERNAME}"
