@@ -23,9 +23,9 @@ for pgn_text in games:
     white_elo = int(headers.get("WhiteElo", "0"))
     black_elo = int(headers.get("BlackElo", "0"))
 
-    if result == "1-0" and "bot" in black.lower() and black_elo >= 2950:
+    if result == "1-0" and "bot" in black.lower() and black_elo >= 2900:
         filtered.append(pgn_text)
-    elif result == "0-1" and "bot" in white.lower() and white_elo >= 2950:
+    elif result == "0-1" and "bot" in white.lower() and white_elo >= 2900:
         filtered.append(pgn_text)
 
 print(f"Filtered {len(filtered)} games out of {len(games)}")
