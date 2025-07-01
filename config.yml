@@ -64,7 +64,7 @@ opening_books:
   books:
     standard:
       selection: uniform_random
-      max_depth: 40
+      max_depth: 80
       names:
         - optimus4
         - optimus2502
@@ -76,6 +76,8 @@ opening_books:
       #max depth : 69 
       names:
         - Titans
+        - optimus2502
+        - optimus4
 
 online_moves:
   opening_explorer:
