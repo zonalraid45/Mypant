@@ -71,7 +71,7 @@ opening_books:
         - optimus2502
        # - optimus4
         - Opimus3.1
-        - Perfect2023
+        - noob
     standard_black:
       selection: weighted_random 
       #max depth : 69 
