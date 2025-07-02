@@ -1,6 +1,9 @@
 # =============================
 # tcec_book_builder.py (Safe)
 # =============================
+# =============================
+# tcec_book_builder.py (Hardened for Polyglot)
+# =============================
 import requests
 import zipfile
 import io
@@ -32,32 +35,39 @@ for filename in z.namelist():
 
 print(f"🔍 Loaded {len(raw_games)} total games")
 
-# Step 3: Helper to sanitize PGN safely
+# Step 3: Strict SAN validation + truncation
 def sanitize_game(game: chess.pgn.Game, max_half_moves: int) -> str | None:
-    board = game.board()
-    new_game = chess.pgn.Game()
-    new_game.headers.update(game.headers)
-    node = new_game
-    move_node = game
-
-    half_moves = 0
     try:
-        while move_node.variations and half_moves < max_half_moves:
-            move = move_node.variations[0].move
-            san = board.san(move)  # convert move to SAN
-            parsed_move = board.parse_san(san)  # re-parse SAN to ensure legality
-            if not board.is_legal(parsed_move):
+        board = game.board()
+        new_game = chess.pgn.Game()
+        new_game.headers.update(game.headers)
+        node = new_game
+
+        curr = game
+        half_moves = 0
+
+        while curr.variations and half_moves < max_half_moves:
+            move = curr.variations[0].move
+            try:
+                san = board.san(move)  # convert to SAN
+                parsed = board.parse_san(san)  # re-parse to validate SAN legality
+            except Exception:
+                return None  # invalid move, skip game
+
+            if not board.is_legal(parsed):
                 return None
-            board.push(parsed_move)
-            node = node.add_variation(parsed_move)
-            move_node = move_node.variations[0]
+
+            board.push(parsed)
+            node = node.add_variation(parsed)
+            curr = curr.variations[0]
             half_moves += 1
+
+        return str(new_game)
+
     except Exception:
         return None
 
-    return str(new_game)
-
-# Step 4: Filter and process valid games
+# Step 4: Filter & sanitize valid Stockfish checkmate wins
 final_games = []
 
 for idx, pg in enumerate(raw_games):
@@ -93,11 +103,36 @@ for idx, pg in enumerate(raw_games):
         print(f"⚠️ Skipped game {idx}: {e}")
         continue
 
-# Step 5: Write safe PGNs to file
-print(f"✅ Found {len(final_games)} valid Stockfish checkmate wins")
+# Step 5: Write initial PGN file
 with open(OUTPUT_PGN, "w", encoding="utf-8") as f:
     for game in final_games:
         f.write(game.strip() + "\n\n")
-print(f"📘 Written {len(final_games)} cleaned PGNs to {OUTPUT_PGN}")
+
+print(f"✅ Written {len(final_games)} sanitized games to {OUTPUT_PGN}")
+
+# Step 6: Final re-validation pass to remove remaining bad games (if any)
+print("🔍 Performing final validation of PGN...")
+validated_games = []
+with open(OUTPUT_PGN, encoding="utf-8") as f:
+    raw = f.read().strip().split("\n\n")
+
+for idx, pg in enumerate(raw):
+    try:
+        game = chess.pgn.read_game(io.StringIO(pg))
+        board = game.board()
+        for move in game.mainline_moves():
+            if not board.is_legal(move):
+                raise ValueError("Illegal move")
+            board.push(move)
+        validated_games.append(pg)
+    except Exception as e:
+        print(f"❌ Removing game {idx}: {e}")
+
+# Overwrite PGN with only valid games
+with open(OUTPUT_PGN, "w", encoding="utf-8") as f:
+    for game in validated_games:
+        f.write(game.strip() + "\n\n")
+
+print(f"✅ Final validated PGN contains {len(validated_games)} games")
 
 
