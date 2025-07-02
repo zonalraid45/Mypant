@@ -6,7 +6,7 @@ engines:
     name: "stockfish-ubuntu-x86-64-bmi2"
     ponder: false
     silence_stderr: false
-    move_overhead_multiplier: 1.1
+    move_overhead_multiplier: 1.0
     uci_options:
       Threads: 4
       Hash: 3200
@@ -72,12 +72,17 @@ opening_books:
         - Opimus3.1
         - Perfect2023
     standard_black:
-      selection: best_move 
+      selection: weighted_random 
       #max depth : 69 
       names:
         - optimus4
         - optimus2502
         - Titans
+    humans: 
+      selection: best_move 
+      names: 
+        - noob
+    
 
 online_moves:
   opening_explorer:
@@ -151,7 +156,7 @@ challenge:
    # - casual
     - rated
   human_modes:
-   # - casual
+    - casual
    #- rated
 
 matchmaking:
@@ -197,4 +202,5 @@ books:
   optimus4: "./engines/book1001.bin"
   Perfect2023: "./engines/Perfect2023.bin"
   Opimus3.1: "./engines/optimus32.bin"
+  noob: "./engines/Titans.bin
 
