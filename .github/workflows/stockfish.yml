@@ -34,14 +34,18 @@ jobs:
       - name: Generate sfbook.bin
         run: |
           mkdir -p engines
-          polyglot make-book -pgn tcec_polyglot_book.pgn -bin engines/sfbook.bin -min-game 1 -max-ply 80
+          polyglot make-book \
+            -pgn tcec_polyglot_book_cleaned.pgn \
+            -bin engines/sfbook.bin \
+            -min-game 1 \
+            -max-ply 80
 
       - name: Check sfbook.bin size
         run: |
           stat engines/sfbook.bin
           SIZE=$(stat --format="%s" engines/sfbook.bin)
           if [ $((SIZE % 16)) -ne 0 ]; then
-            echo "ERROR: sfbook.bin size not multiple of 16"
+            echo "❌ ERROR: sfbook.bin size not multiple of 16"
             exit 1
           fi
           echo "✅ sfbook.bin is valid"
@@ -54,4 +58,4 @@ jobs:
           git config --global user.name "GitHub Actions"
           git add engines/sfbook.bin
           git commit -m "Update sfbook.bin from TCEC games [automated]" || echo "No changes to commit"
-          git push
+          git pushu
