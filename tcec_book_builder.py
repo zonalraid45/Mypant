@@ -18,50 +18,63 @@ z = zipfile.ZipFile(io.BytesIO(resp.content))
 print(f"📦 Extracted {len(z.namelist())} files from ZIP")
 
 # Filter only PGNs containing Stockfish wins by checkmate
-games = []
+raw_games = []
 for filename in z.namelist():
-    if filename.endswith(".pgn"):
-        content = z.read(filename).decode("utf-8")
-        raw_games = content.strip().split("\n\n[Event")
-        raw_games = ["[Event" + g if not g.startswith("[Event") else g for g in raw_games if g.strip()]
-        for pg in raw_games:
-            game = chess.pgn.read_game(io.StringIO(pg))
-            if not game:
-                continue
-            board = game.board()
-            for move in game.mainline_moves():
-                board.push(move)
-            is_mate = board.is_checkmate()
-
-            white = game.headers.get("White", "").lower()
-            black = game.headers.get("Black", "").lower()
-            result = game.headers.get("Result", "")
-
-            # Stockfish won by checkmate
-            if is_mate and (("stockfish" in white and result == "1-0") or ("stockfish" in black and result == "0-1")):
-                games.append(pg)
-
-print(f"✅ Found {len(games)} Stockfish checkmate wins")
-
-random.shuffle(games)
-trimmed = []
-for pg in games:
-    game = chess.pgn.read_game(io.StringIO(pg))
-    if not game:
+    if not filename.endswith(".pgn"):
         continue
+    content = z.read(filename).decode("utf-8")
+    entries = content.strip().split("\n\n[Event")
+    entries = ["[Event" + e if not e.startswith("[Event") else e for e in entries if e.strip()]
+    raw_games.extend(entries)
+
+print(f"🔍 Loaded {len(raw_games)} total games from all PGNs")
+
+def sanitize_game(game: chess.pgn.Game, max_half_moves: int) -> str | None:
     board = game.board()
     new_game = chess.pgn.Game()
     node = new_game
+
     for i, move in enumerate(game.mainline_moves()):
-        if i >= MAX_HALF_MOVES:
+        if i >= max_half_moves:
             break
-        board.push(move)
+        try:
+            board.push(move)
+        except Exception:
+            return None
         node = node.add_variation(move)
+
     new_game.headers.update(game.headers)
-    trimmed.append(str(new_game))
+    return str(new_game)
+
+# Filter Stockfish wins by checkmate (excluding Fischer Random Chess)
+final_games = []
+for pg in raw_games:
+    game = chess.pgn.read_game(io.StringIO(pg))
+    if not game:
+        continue
+
+    variant = game.headers.get("Variant", "Standard")
+    if variant.lower() != "standard":
+        continue
+
+    board = game.board()
+    for move in game.mainline_moves():
+        board.push(move)
+
+    is_mate = board.is_checkmate()
+    white = game.headers.get("White", "").lower()
+    black = game.headers.get("Black", "").lower()
+    result = game.headers.get("Result", "")
+
+    if is_mate and (("stockfish" in white and result == "1-0") or ("stockfish" in black and result == "0-1")):
+        trimmed = sanitize_game(game, MAX_HALF_MOVES)
+        if trimmed:
+            final_games.append(trimmed)
+
+print(f"✅ Found {len(final_games)} valid Stockfish checkmate wins")
 
 with open(OUTPUT_PGN, "w", encoding="utf-8") as f:
-    for game in trimmed:
+    for game in final_games:
         f.write(game + "\n\n")
 
-print(f"📘 Written {len(trimmed)} trimmed Stockfish wins to {OUTPUT_PGN}")
+print(f"📘 Written {len(final_games)} trimmed Stockfish wins to {OUTPUT_PGN}")
