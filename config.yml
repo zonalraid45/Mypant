@@ -63,7 +63,7 @@ opening_books:
   priority: 999
   books:
     standard:
-      selection: best_move
+      selection: weighted_random
       max_depth: 80
       names:
         - Perfect2023
@@ -76,6 +76,7 @@ opening_books:
       selection: weighted_random 
       #max depth : 69 
       names:
+        - Perfect2023
         - optimus4
         - optimus2502
         - Titans
