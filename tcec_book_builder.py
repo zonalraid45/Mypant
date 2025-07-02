@@ -1,8 +1,5 @@
 # =============================
-# tcec_book_builder.py (Safe)
-# =============================
-# =============================
-# tcec_book_builder.py (Hardened for Polyglot)
+# tcec_book_builder.py (Polyglot-Safe Final Version)
 # =============================
 import requests
 import zipfile
@@ -35,7 +32,7 @@ for filename in z.namelist():
 
 print(f"🔍 Loaded {len(raw_games)} total games")
 
-# Step 3: Strict SAN validation + truncation
+# Step 3: Strict SAN validation + truncation + move identity check
 def sanitize_game(game: chess.pgn.Game, max_half_moves: int) -> str | None:
     try:
         board = game.board()
@@ -49,13 +46,14 @@ def sanitize_game(game: chess.pgn.Game, max_half_moves: int) -> str | None:
         while curr.variations and half_moves < max_half_moves:
             move = curr.variations[0].move
             try:
-                san = board.san(move)  # convert to SAN
-                parsed = board.parse_san(san)  # re-parse to validate SAN legality
+                san = board.san(move)
+                parsed = board.parse_san(san)
+                if move != parsed:
+                    return None  # Disallow ambiguous SAN like "Ne3" parsing wrong move
+                if not board.is_legal(parsed):
+                    return None
             except Exception:
-                return None  # invalid move, skip game
-
-            if not board.is_legal(parsed):
-                return None
+                return None  # Corrupt SAN
 
             board.push(parsed)
             node = node.add_variation(parsed)
@@ -68,6 +66,10 @@ def sanitize_game(game: chess.pgn.Game, max_half_moves: int) -> str | None:
         return None
 
 # Step 4: Filter & sanitize valid Stockfish checkmate wins
+def is_stockfish(name: str) -> bool:
+    name = name.lower()
+    return "stockfish" in name or name.startswith("sf")
+
 final_games = []
 
 for idx, pg in enumerate(raw_games):
@@ -91,10 +93,10 @@ for idx, pg in enumerate(raw_games):
             continue
 
         result = game.headers.get("Result", "")
-        white = game.headers.get("White", "").lower()
-        black = game.headers.get("Black", "").lower()
+        white = game.headers.get("White", "")
+        black = game.headers.get("Black", "")
 
-        if (result == "1-0" and "stockfish" in white) or (result == "0-1" and "stockfish" in black):
+        if (result == "1-0" and is_stockfish(white)) or (result == "0-1" and is_stockfish(black)):
             trimmed = sanitize_game(game, MAX_HALF_MOVES)
             if trimmed:
                 final_games.append(trimmed)
@@ -110,7 +112,7 @@ with open(OUTPUT_PGN, "w", encoding="utf-8") as f:
 
 print(f"✅ Written {len(final_games)} sanitized games to {OUTPUT_PGN}")
 
-# Step 6: Final re-validation pass to remove remaining bad games (if any)
+# Step 6: Final re-validation pass to remove remaining bad games
 print("🔍 Performing final validation of PGN...")
 validated_games = []
 with open(OUTPUT_PGN, encoding="utf-8") as f:
@@ -128,7 +130,7 @@ for idx, pg in enumerate(raw):
     except Exception as e:
         print(f"❌ Removing game {idx}: {e}")
 
-# Overwrite PGN with only valid games
+# Step 7: Overwrite PGN with only valid games
 with open(OUTPUT_PGN, "w", encoding="utf-8") as f:
     for game in validated_games:
         f.write(game.strip() + "\n\n")
