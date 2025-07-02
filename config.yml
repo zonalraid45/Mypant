@@ -66,7 +66,7 @@ opening_books:
       selection: best_move
       max_depth: 80
       names:
-        - optimus4
+        - Perfect2023
         - optimus2502
        # - optimus4
         - Opimus3.1
@@ -200,7 +200,7 @@ books:
   Titans: "./engines/book1.bin"
   optimus2502: "./engines/OPTIMUS2502.bin"
   optimus4: "./engines/book1001.bin"
-  Perfect2023: "./engines/Perfect2023.bin"
+  Perfect2023: "./engines/sfbook.bin"
   Opimus3.1: "./engines/optimus32.bin"
   noob: "./engines/Titans.bin"
 
