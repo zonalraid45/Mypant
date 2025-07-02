@@ -1,19 +1,18 @@
 # =============================
-# tcec_book_builder.py
+# tcec_book_builder.py (Safe)
 # =============================
 import requests
 import zipfile
 import io
 import chess.pgn
-import random
 import os
 
 # Configuration
 TCEC_ZIP_URL = "https://github.com/TCEC-Chess/tcecgames/releases/download/S27-final/TCEC-everything-compact.zip"
-OUTPUT_PGN = "tcec_polyglot_book.pgn"
+OUTPUT_PGN = "tcec_polyglot_book_cleaned.pgn"
 MAX_HALF_MOVES = 80
 
-# Download and extract PGN zip
+# Step 1: Download and extract PGNs
 print(f"⬇️ Downloading {TCEC_ZIP_URL}...")
 resp = requests.get(TCEC_ZIP_URL)
 resp.raise_for_status()
@@ -21,7 +20,7 @@ resp.raise_for_status()
 z = zipfile.ZipFile(io.BytesIO(resp.content))
 print(f"📦 Extracted {len(z.namelist())} files from ZIP")
 
-# Collect raw PGN entries
+# Step 2: Collect raw PGN entries
 raw_games = []
 for filename in z.namelist():
     if not filename.endswith(".pgn"):
@@ -33,27 +32,32 @@ for filename in z.namelist():
 
 print(f"🔍 Loaded {len(raw_games)} total games")
 
-# Helper: sanitize game and truncate to max_half_moves
+# Step 3: Helper to sanitize PGN safely
 def sanitize_game(game: chess.pgn.Game, max_half_moves: int) -> str | None:
     board = game.board()
     new_game = chess.pgn.Game()
-    node = new_game
-
-    for i, move in enumerate(game.mainline_moves()):
-        if i >= max_half_moves:
-            break
-        if not board.is_legal(move):
-            return None
-        try:
-            board.push(move)
-        except Exception:
-            return None
-        node = node.add_variation(move)
-
     new_game.headers.update(game.headers)
+    node = new_game
+    move_node = game
+
+    half_moves = 0
+    try:
+        while move_node.variations and half_moves < max_half_moves:
+            move = move_node.variations[0].move
+            san = board.san(move)  # convert move to SAN
+            parsed_move = board.parse_san(san)  # re-parse SAN to ensure legality
+            if not board.is_legal(parsed_move):
+                return None
+            board.push(parsed_move)
+            node = node.add_variation(parsed_move)
+            move_node = move_node.variations[0]
+            half_moves += 1
+    except Exception:
+        return None
+
     return str(new_game)
 
-# Final game list
+# Step 4: Filter and process valid games
 final_games = []
 
 for idx, pg in enumerate(raw_games):
@@ -62,8 +66,7 @@ for idx, pg in enumerate(raw_games):
         if not game:
             continue
 
-        variant = game.headers.get("Variant", "Standard").lower()
-        if variant != "standard":
+        if game.headers.get("Variant", "Standard").lower() != "standard":
             continue
 
         board = game.board()
@@ -86,14 +89,15 @@ for idx, pg in enumerate(raw_games):
             if trimmed:
                 final_games.append(trimmed)
 
-    except Exception:
-        continue  # quietly skip malformed games
+    except Exception as e:
+        print(f"⚠️ Skipped game {idx}: {e}")
+        continue
 
-# Write valid PGNs to file
+# Step 5: Write safe PGNs to file
 print(f"✅ Found {len(final_games)} valid Stockfish checkmate wins")
 with open(OUTPUT_PGN, "w", encoding="utf-8") as f:
     for game in final_games:
-        f.write(game + "\n\n")
-print(f"📘 Written {len(final_games)} trimmed Stockfish wins to {OUTPUT_PGN}")
+        f.write(game.strip() + "\n\n")
+print(f"📘 Written {len(final_games)} cleaned PGNs to {OUTPUT_PGN}")
 
 
