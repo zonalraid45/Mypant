@@ -58,4 +58,4 @@ jobs:
           git config --global user.name "GitHub Actions"
           git add engines/sfbook.bin
           git commit -m "Update sfbook.bin from TCEC games [automated]" || echo "No changes to commit"
-          git pushu
+          git push
