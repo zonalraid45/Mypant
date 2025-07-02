@@ -38,9 +38,11 @@ def sanitize_game(game: chess.pgn.Game, max_half_moves: int) -> str | None:
         if i >= max_half_moves:
             break
         try:
+            if not board.is_legal(move):
+                return None  # illegal move, skip game
             board.push(move)
         except Exception:
-            return None
+            return None  # malformed move, skip game
         node = node.add_variation(move)
 
     new_game.headers.update(game.headers)
@@ -49,27 +51,32 @@ def sanitize_game(game: chess.pgn.Game, max_half_moves: int) -> str | None:
 # Filter Stockfish wins by checkmate (excluding Fischer Random Chess)
 final_games = []
 for pg in raw_games:
-    game = chess.pgn.read_game(io.StringIO(pg))
-    if not game:
-        continue
+    try:
+        game = chess.pgn.read_game(io.StringIO(pg))
+        if not game:
+            continue
 
-    variant = game.headers.get("Variant", "Standard")
-    if variant.lower() != "standard":
-        continue
+        variant = game.headers.get("Variant", "Standard")
+        if variant.lower() != "standard":
+            continue
 
-    board = game.board()
-    for move in game.mainline_moves():
-        board.push(move)
+        board = game.board()
+        for move in game.mainline_moves():
+            if not board.is_legal(move):
+                raise ValueError("Illegal move found")
+            board.push(move)
 
-    is_mate = board.is_checkmate()
-    white = game.headers.get("White", "").lower()
-    black = game.headers.get("Black", "").lower()
-    result = game.headers.get("Result", "")
+        is_mate = board.is_checkmate()
+        white = game.headers.get("White", "").lower()
+        black = game.headers.get("Black", "").lower()
+        result = game.headers.get("Result", "")
 
-    if is_mate and (("stockfish" in white and result == "1-0") or ("stockfish" in black and result == "0-1")):
-        trimmed = sanitize_game(game, MAX_HALF_MOVES)
-        if trimmed:
-            final_games.append(trimmed)
+        if is_mate and (("stockfish" in white and result == "1-0") or ("stockfish" in black and result == "0-1")):
+            trimmed = sanitize_game(game, MAX_HALF_MOVES)
+            if trimmed:
+                final_games.append(trimmed)
+    except Exception as e:
+        continue  # skip broken games
 
 print(f"✅ Found {len(final_games)} valid Stockfish checkmate wins")
 
@@ -78,3 +85,4 @@ with open(OUTPUT_PGN, "w", encoding="utf-8") as f:
         f.write(game + "\n\n")
 
 print(f"📘 Written {len(final_games)} trimmed Stockfish wins to {OUTPUT_PGN}")
+
