@@ -8,7 +8,7 @@ import os
 TCEC_ZIP_URL = "https://github.com/TCEC-Chess/tcecgames/releases/download/S27-final/TCEC-everything-compact.zip"
 OUTPUT_PGN = "tcec_polyglot_book_cleaned.pgn"
 MAX_HALF_MOVES = 80
-SKIP_INDEXES = {960}  # Game 961 (0-based index 960) is the culprit with illegal Ne3
+SKIP_INDEXES = {960}  # skip game with illegal "Ne3" move
 
 def download_tcec_zip():
     print(f"⬇️ Downloading {TCEC_ZIP_URL}...")
@@ -77,16 +77,16 @@ def filter_valid_games(raw_games):
             white = game.headers.get("White", "")
             black = game.headers.get("Black", "")
 
-            board = game.board()
-            for move in game.mainline_moves():
-                if not board.is_legal(move):
-                    raise ValueError("Illegal move")
-                board.push(move)
-
-            if not board.is_checkmate():
-                continue
-
+            # include any Stockfish win (no checkmate required)
             if (result == "1-0" and is_stockfish(white)) or (result == "0-1" and is_stockfish(black)):
+                # Validate full legality of moves
+                board = game.board()
+                for move in game.mainline_moves():
+                    if not board.is_legal(move):
+                        raise ValueError("Illegal move")
+                    board.push(move)
+
+                # Truncate and rebuild
                 cleaned = safe_game_from_san(game, MAX_HALF_MOVES)
                 if cleaned:
                     final.append(cleaned)
