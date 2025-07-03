@@ -3,14 +3,14 @@ token: "TokenTimeIsBackBuddyss"  # Lichess OAuth2 Token.
 engines:
   standard:
     dir: "./engines"
-    name: "stockfish-ubuntu-x86-64-bmi2"
-    ponder: false
+    name: "stockfish"
+    ponder: true
     silence_stderr: false
-    move_overhead_multiplier: 1.0
+    move_overhead_multiplier: 21.0
     uci_options:
-      Threads: 4
-      Hash: 3200
-      Move Overhead: 215
+      Threads: 8
+      Hash: 1024
+      Move Overhead: 100
     limits:
       # time: 20.0
       # depth: 50
@@ -60,35 +60,35 @@ gaviota:
 
 opening_books:
   enabled: true
-  priority: 999
+  priority: 400
   books:
-    standard:
-      selection: weighted_random
-      max_depth: 80
-      names:
-        - Perfect2023
-        - optimus4
-        - optimus2502
-       # - optimus4
-        - Opimus3.1
-        - noob
+#   standard:
+#     selection: weighted_random          # Move selection is one of "weighted_random", "uniform_random" or "best_move".
+#     max_depth: 16                       # Half move max depth. (Comment this line for max depth)
+#     names:                              # List of names of books to use if there is no specific book for the time control, white, black or chess960
+#       - DefaultBook    
     standard_black:
       selection: weighted_random 
-      #max depth : 69 
+    # max depth : 69 
       names:
-        - Perfect2023
-        - optimus4
-        - optimus2502
-        - Titans
+        - Optimus
+        - Black
+    standard_white:
+      selection: weighted_random 
+    # max depth : 69 
+      names:
+        - White
+        - Optimus    
     humans: 
       selection: best_move 
       names: 
-        - noob
+        - Torma
+        - Titans
     
 
 online_moves:
   opening_explorer:
-    enabled: true
+    enabled: false
     priority: 300
     only_without_book: false
     use_for_variants: true
@@ -101,7 +101,7 @@ online_moves:
     # max_depth: 20
 
   lichess_cloud:
-    enabled: true
+    enabled: false
     priority: 200
     only_without_book: false
     min_eval_depth: 20
@@ -111,16 +111,16 @@ online_moves:
 
   chessdb:
     enabled: true
-    priority: 250
-    only_without_book: false
-    min_candidates: 5
-    min_time: 20
-    timeout: 3
+    priority: 200
+    only_without_book: true
+    min_candidates: 1
+    min_time: 10
+    timeout: 5
     selection: "optimal"
     # max_depth: 30
 
   online_egtb:
-    enabled: true
+    enabled: false
     min_time: 20
     timeout: 3
 
@@ -128,7 +128,7 @@ offer_draw:
   enabled: true
   score: 10
   consecutive_moves: 10
-  min_game_length: 40
+  min_game_length: 32
   against_humans: false
 
 resign:
@@ -138,9 +138,9 @@ resign:
   against_humans: false
 
 challenge:
-  concurrency: 1
-  bullet_with_increment_only: false
-  min_initial: 60
+  concurrency: 2
+  bullet_with_increment_only: false   
+# min_initial: 60
   variants:
     - standard
     - chess960
@@ -152,14 +152,14 @@ challenge:
   time_controls:
     - bullet
     - blitz
-    - rapid
-    - classical
+  # - rapid
+  # - classical
   bot_modes:
-   # - casual
-    - rated
+    - casual
+  # - rated
   human_modes:
     - casual
-   #- rated
+    - rated
 
 matchmaking:
   delay: 10
@@ -189,20 +189,19 @@ matchmaking:
       variant: chess960
 
 messages:
-  greeting: "Konnichiwa guzaimase! ❤️‍🔥Using help of {engine} Type !help to glimpse my arsenal. Best of luck"
-  goodbye: "GGs, ezz. May we meet again, may I win again 💶 {me} signing off!"
-  greeting_spectators: "ITZ {engine} in {me} competing for more depth with @{opponent} Type !help for a list of commands."
-  goodbye_spectators: "SIMULATION TERMINATED### @{opponent} Thanks For watching, {me} signing off!"
+  greeting: "Humpo Dumpo! I am {me} made by Realboy9000.Looking forward to start,good luck."
+  goodbye: "Good game!How about a rematch?"
+  greeting_spectators: "Hey, I'm running on {engine} .Type !help for a list of commands."
+  goodbye_spectators: "Thanks For watching!"
 
 whitelist:
-  - Supratsa
-  - Shresthmah
+  - Realboy9000 
+  - Exogenetic-Bot 
 
 books:
-  Titans: "./engines/book1.bin"
-  optimus2502: "./engines/OPTIMUS2502.bin"
-  optimus4: "./engines/book1001.bin"
-  Perfect2023: "./engines/sfbook.bin"
-  Opimus3.1: "./engines/optimus32.bin"
-  noob: "./engines/Titans.bin"
+  Torma: "./engines/Torma.bin"
+  Optimus: "./engines/OPTIMUS2502.bin"
+  Black: "./engines/black.bin"
+  White: "./engines/white.bin"
+  Titans: "./engines/Titans.bin"
 
