@@ -42,13 +42,23 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git config user.name "github-actions[bot]"
+          # Show what’s actually in engines/
+          echo "📁 engines folder after copy:"
+          ls -l engines || true
+
+          # Configure Git
+          git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          if [ ! -f engines/stockfish ] || ! git diff --quiet engines/stockfish; then
-            git add engines/stockfish
-            git commit -m "chore: update to latest Stockfish build"
-            git push
-          else
+          # Stage the binary (creates it in the index if it was missing)
+          git add engines/stockfish
+
+          # If nothing changed in the index, skip the commit
+          if git diff --cached --quiet; then
             echo "✅ No changes to commit."
+            exit 0
           fi
+
+          # Commit and push
+          git commit -m "chore: update to latest Stockfish build"
+          git push
