@@ -38,16 +38,17 @@ jobs:
           mv "$BIN_PATH" engines/stockfish
           chmod +x engines/stockfish
 
-      - name: Commit and push if updated
+      - name: Commit and push if new or changed
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          if git diff --quiet engines/stockfish; then
-            echo "✅ No changes to commit."
-            exit 0
-          fi
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add engines/stockfish
-          git commit -m "chore: update to latest Stockfish build"
-          git push
+
+          if [ ! -f engines/stockfish ] || ! git diff --quiet engines/stockfish; then
+            git add engines/stockfish
+            git commit -m "chore: update to latest Stockfish build"
+            git push
+          else
+            echo "✅ No changes to commit."
+          fi
