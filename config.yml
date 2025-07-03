@@ -71,14 +71,15 @@ opening_books:
       selection: weighted_random 
     # max depth : 69 
       names:
-        - Optimus
         - Black
+        - Optimus
     standard_white:
       selection: weighted_random 
     # max depth : 69 
       names:
         - White
-        - Optimus    
+        - Black
+        - Optimus
     humans: 
       selection: best_move 
       names: 
@@ -201,7 +202,7 @@ whitelist:
 books:
   Torma: "./engines/Torma.bin"
   Optimus: "./engines/OPTIMUS2502.bin"
-  Black: "./engines/black.bin"
+  Black: "./engines/Optical.bin"
   White: "./engines/white.bin"
   Titans: "./engines/Titans.bin"
 
