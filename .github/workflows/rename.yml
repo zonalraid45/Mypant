@@ -1,4 +1,4 @@
-name: Update Stockfish Engine
+name: Update Stockfish Engines
 
 on: workflow_dispatch:  # run this job manually from the Actions tab
 
