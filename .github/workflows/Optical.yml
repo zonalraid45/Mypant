@@ -1,11 +1,8 @@
-# .github/workflows/add-optical.yml
-name: Add Optical.bin to engines
+# .github/workflows/download-book.yml
+name: Download Book3.bin to engines
 
 on:
-  workflow_dispatch:        # run it manually from the Actions tab
-  push:
-    paths:
-      - ".github/workflows/add-optical.yml"   # re-runs if you edit this file
+  workflow_dispatch:
 
 jobs:
   download-and-push:
@@ -17,16 +14,15 @@ jobs:
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Download Optical.bin from MediaFire
+    - name: Download Book3.bin from GitHub
       run: |
         mkdir -p engines
-        # follow redirects (-L) to grab the file
-        curl -L -o engines/Optical.bin "https://download1477.mediafire.com/nribl7djot5g/6dnw9v6lyo18lw5/Optical.bin"
+        curl -L -o engines/Optical.bin "https://raw.githubusercontent.com/Chess75/TheBestb/main/engines/Book3.bin"
 
-    - name: Commit & push the new file
+    - name: Commit & push Optical.bin
       run: |
-        git config user.name  "github-actions[bot]"
+        git config user.name "github-actions[bot]"
         git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
         git add engines/Optical.bin
-        git commit -m "Add Optical.bin to engines folder" || echo "Nothing to commit"
+        git commit -m "Add Optical.bin from Book3.bin" || echo "No changes to commit"
         git push
