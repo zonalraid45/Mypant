@@ -23,13 +23,8 @@ jobs:
       - name: Fetch latest AVX2 build URL
         id: fetch
         run: |
-          URL=$(curl -s https://abrok.eu/stockfish/ | grep -Eo 'href="[^"]*linux64avx2/stockfish_[^"]+\.zip"' | head -n 1 | cut -d'"' -f2)
-          echo "download_url=https://abrok.eu${URL}" >> $GITHUB_OUTPUT
-
-      - name: Download latest Stockfish build
-        run: |
-          curl -L -o stockfish.zip "${{ steps.fetch.outputs.download_url }}"
-
+          curl -L -o stockfish.zip "https://abrok.eu/stockfish/builds/ce73441f2013e0b8fd3eb7a0c9fd391d52adde70/linux64avx2/stockfish_25070216_x64_avx2.zip"
+          
       - name: Unzip Stockfish
         run: unzip -q stockfish.zip
 
