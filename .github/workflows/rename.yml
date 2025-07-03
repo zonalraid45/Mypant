@@ -1,0 +1,43 @@
+name: Update Stockfish Engine
+
+on: workflow_dispatch:  # run this job manually from the Actions tab
+
+jobs: download-and-commit: name: Download & Commit Stockfish build runs-on: ubuntu-latest
+
+steps:
+  - name: Checkout repository
+    uses: actions/checkout@v4
+    with:
+      persist-credentials: true
+
+  - name: Download Stockfish build
+    run: |
+      curl -L -o stockfish.zip "https://abrok.eu/stockfish/builds/ce73441f2013e0b8fd3eb7a0c9fd391d52adde70/linux64avx2/stockfish_25070216_x64_avx2.zip"
+
+  - name: Unzip build
+    run: unzip -q stockfish.zip
+
+  - name: Move & rename Stockfish binary
+    run: |
+      BIN_PATH=$(find . -type f -executable -name "stockfish_*_x64_avx2" | head -n 1)
+      if [[ -z "$BIN_PATH" ]]; then
+        echo "Engine binary not found!" >&2
+        exit 1
+      fi
+      mv "$BIN_PATH" engines/stockfish
+      chmod +x engines/stockfish
+
+  - name: Commit and push changes
+    run: |
+      if git diff --quiet engines/stockfish; then
+        echo "No changes to commit. Exiting."
+        exit 0
+      fi
+      git config user.name "github-actions[bot]"
+      git config user.email "github-actions[bot]@users.noreply.github.com"
+      git add engines/stockfish
+      git commit -m "chore: update Stockfish engine to 25070216 avx2 build"
+      git push
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
