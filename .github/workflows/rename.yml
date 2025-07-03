@@ -1,16 +1,16 @@
-name: Update Stockfish Engine
+name: Update Stockfish to Latest Build
 
 on:
-  workflow_dispatch:       # Allows manual trigger from Actions tab
-  push:
-    branches: [main, master]  # Optional: auto-run on push to main/master
+  workflow_dispatch:       # Manual run from GitHub Actions tab
+  schedule:
+    - cron: '0 0 * * *'     # Optional: runs daily at midnight UTC
 
 permissions:
-  contents: write  # Required to allow pushing changes back to the repo
+  contents: write
 
 jobs:
-  download-and-commit:
-    name: Download & Commit Stockfish build
+  update-stockfish:
+    name: Download & Push Latest Stockfish
     runs-on: ubuntu-latest
 
     steps:
@@ -20,9 +20,15 @@ jobs:
           fetch-depth: 0
           persist-credentials: true
 
-      - name: Download Stockfish build
+      - name: Fetch latest AVX2 build URL
+        id: fetch
         run: |
-          curl -L -o stockfish.zip "https://abrok.eu/stockfish/builds/ce73441f2013e0b8fd3eb7a0c9fd391d52adde70/linux64avx2/stockfish_25070216_x64_avx2.zip"
+          URL=$(curl -s https://abrok.eu/stockfish/ | grep -Eo 'href="[^"]*linux64avx2/stockfish_[^"]+\.zip"' | head -n 1 | cut -d'"' -f2)
+          echo "download_url=https://abrok.eu${URL}" >> $GITHUB_OUTPUT
+
+      - name: Download latest Stockfish build
+        run: |
+          curl -L -o stockfish.zip "${{ steps.fetch.outputs.download_url }}"
 
       - name: Unzip Stockfish
         run: unzip -q stockfish.zip
@@ -31,13 +37,13 @@ jobs:
         run: |
           BIN_PATH=$(find . -type f -executable -name "stockfish_*_x64_avx2" | head -n 1)
           if [[ -z "$BIN_PATH" ]]; then
-            echo "❌ Stockfish binary not found!" >&2
+            echo "❌ Stockfish binary not found!"
             exit 1
           fi
           mv "$BIN_PATH" engines/stockfish
           chmod +x engines/stockfish
 
-      - name: Commit and push changes
+      - name: Commit and push if updated
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -48,5 +54,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add engines/stockfish
-          git commit -m "chore: update Stockfish engine to 25070216 AVX2 build"
+          git commit -m "chore: update to latest Stockfish build"
           git push
