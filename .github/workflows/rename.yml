@@ -1,50 +1,52 @@
 name: Update Stockfish Engine
 
-Trigger manually from the Actions tab or whenever you push to the default branch
+on:
+  workflow_dispatch:       # Allows manual trigger from Actions tab
+  push:
+    branches: [main, master]  # Optional: auto-run on push to main/master
 
-on: workflow_dispatch: push: branches: ["main", "master"]
+permissions:
+  contents: write  # Required to allow pushing changes back to the repo
 
-jobs: download-and-commit: name: Download & Commit Stockfish build runs-on: ubuntu-latest
+jobs:
+  download-and-commit:
+    name: Download & Commit Stockfish build
+    runs-on: ubuntu-latest
 
-permissions:  # allow this job to push commits back to the repo
-  contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
 
-steps:
-  - name: Checkout repository
-    uses: actions/checkout@v4
-    with:
-      fetch-depth: 0            # full history so we can push back
-      persist-credentials: true # keeps GITHUB_TOKEN credentials for pushing
+      - name: Download Stockfish build
+        run: |
+          curl -L -o stockfish.zip "https://abrok.eu/stockfish/builds/ce73441f2013e0b8fd3eb7a0c9fd391d52adde70/linux64avx2/stockfish_25070216_x64_avx2.zip"
 
-  - name: Download Stockfish build
-    run: |
-      curl -L -o stockfish.zip "https://abrok.eu/stockfish/builds/ce73441f2013e0b8fd3eb7a0c9fd391d52adde70/linux64avx2/stockfish_25070216_x64_avx2.zip"
+      - name: Unzip Stockfish
+        run: unzip -q stockfish.zip
 
-  - name: Unzip build
-    run: unzip -q stockfish.zip
+      - name: Move and rename Stockfish binary
+        run: |
+          BIN_PATH=$(find . -type f -executable -name "stockfish_*_x64_avx2" | head -n 1)
+          if [[ -z "$BIN_PATH" ]]; then
+            echo "❌ Stockfish binary not found!" >&2
+            exit 1
+          fi
+          mv "$BIN_PATH" engines/stockfish
+          chmod +x engines/stockfish
 
-  - name: Move & rename Stockfish binary
-    run: |
-      # Find the executable produced by the unzip
-      BIN_PATH=$(find . -type f -executable -name "stockfish_*_x64_avx2" | head -n 1)
-      if [[ -z "$BIN_PATH" ]]; then
-        echo "Engine binary not found!" >&2
-        exit 1
-      fi
-      mv "$BIN_PATH" engines/stockfish
-      chmod +x engines/stockfish
-
-  - name: Commit and push changes
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    run: |
-      if git diff --quiet engines/stockfish; then
-        echo "No update detected — skipping commit."
-        exit 0
-      fi
-      git config user.name "github-actions[bot]"
-      git config user.email "github-actions[bot]@users.noreply.github.com"
-      git add engines/stockfish
-      git commit -m "chore: update Stockfish engine to 25070216 AVX2 build"
-      git push
-
+      - name: Commit and push changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if git diff --quiet engines/stockfish; then
+            echo "✅ No changes to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add engines/stockfish
+          git commit -m "chore: update Stockfish engine to 25070216 AVX2 build"
+          git push
