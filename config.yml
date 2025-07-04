@@ -111,15 +111,15 @@ online_moves:
     # max_depth: 30
 
   chessdb:
-    enabled: true
-    priority: 100
-    only_without_book: false
-    min_candidates: 1
-    min_time: 10
-    timeout: 5
-    selection: "best"
-    # max_depth: 30
-
+    enabled: true                         # Activate online moves from https://chessdb.cn/queryc_en/
+    priority: 100                         # Priority with which this move source is used. Higher priority is used first.
+    only_without_book: false              # Whether the chessdb should only be used if there is no matching book.
+    min_candidates: 5                     # Minimum number of candidate moves.
+    min_time: 20                          # Time the bot must have at least to use the online move. +10 seconds in games without increment.
+    timeout: 5                            # Time the server has to respond.
+    selection: "best"                     # Move selection is one of "optimal", "best" or "good".
+    max_depth: 30
+    
   online_egtb:
     enabled: false
     min_time: 20
