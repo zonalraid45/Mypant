@@ -10,7 +10,7 @@ engines:
     uci_options:
       Threads: 8
       Hash: 1024
-      Move Overhead: 120
+      Move Overhead: 195
     limits:
       # time: 20.0
       # depth: 50
