@@ -139,7 +139,7 @@ resign:
   against_humans: false
 
 challenge:
-  concurrency: 2
+  concurrency: 1
   bullet_with_increment_only: false   
 # min_initial: 60
   variants:
