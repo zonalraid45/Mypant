@@ -112,12 +112,12 @@ online_moves:
 
   chessdb:
     enabled: true
-    priority: 200
-    only_without_book: true
+    priority: 100
+    only_without_book: false
     min_candidates: 1
     min_time: 10
     timeout: 5
-    selection: "optimal"
+    selection: "best"
     # max_depth: 30
 
   online_egtb:
