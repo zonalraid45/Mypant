@@ -71,8 +71,8 @@ opening_books:
       selection: best_move 
     # max depth : 69 
       names:
+        - Win
         - Black
-        - Optimus
     standard_white:
       selection: best_move 
     # max depth : 69 
@@ -203,6 +203,7 @@ books:
   Torma: "./engines/Torma.bin"
   Optimus: "./engines/OPTIMUS2502.bin"
   Black: "./engines/Optical.bin"
+  Win: "./engines/win.bin"
   White: "./engines/white.bin"
   Titans: "./engines/Titans.bin"
 
