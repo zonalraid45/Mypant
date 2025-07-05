@@ -6,7 +6,7 @@ engines:
     name: "stockfish"
     ponder: true
     silence_stderr: false
-    move_overhead_multiplier: 1.2
+    move_overhead_multiplier: 1.1
     uci_options:
       Threads: 8
       Hash: 1024
