@@ -60,7 +60,7 @@ gaviota:
 
 opening_books:
   enabled: true
-  priority: 400
+  priority: 900
   books:
 #   standard:
 #     selection: weighted_random          # Move selection is one of "weighted_random", "uniform_random" or "best_move".
