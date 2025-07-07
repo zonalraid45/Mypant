@@ -6,11 +6,11 @@ engines:
     name: "stockfish"
     ponder: true
     silence_stderr: false
-    move_overhead_multiplier: 1.01
+    move_overhead_multiplier: 20.0
     uci_options:
       Threads: 4
-      Hash: 1024
-      Move Overhead: 235
+      Hash: 2048
+      Move Overhead: 100
     limits:
       # time: 20.0
       # depth: 50
@@ -111,7 +111,7 @@ online_moves:
     # max_depth: 30
 
   chessdb:
-    enabled: true                         # Activate online moves from https://chessdb.cn/queryc_en/
+    enabled: false                         # Activate online moves from https://chessdb.cn/queryc_en/
     priority: 100                         # Priority with which this move source is used. Higher priority is used first.
     only_without_book: false              # Whether the chessdb should only be used if there is no matching book.
     min_candidates: 5                     # Minimum number of candidate moves.
